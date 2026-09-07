@@ -1,0 +1,20 @@
+{
+  "name": "life-agent-dev",
+  "interface": {
+    "displayName": "Life Agent Dev"
+  },
+  "plugins": [
+    {
+      "name": "life-agent",
+      "source": {
+        "source": "local",
+        "path": "./plugins/life-agent"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
