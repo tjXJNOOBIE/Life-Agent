@@ -2,6 +2,7 @@ import dns from 'node:dns/promises';
 import net from 'node:net';
 
 const DAY = 24 * 60 * 60 * 1000;
+const HOUR = 60 * 60 * 1000;
 const ICON_TYPES = new Set([
   'image/png',
   'image/jpeg',
@@ -176,6 +177,7 @@ export class AssetResolver {
     lookup = dns.lookup,
     iconTtlMs = 31 * DAY,
     backgroundTtlMs = 31 * DAY,
+    negativeTtlMs = 6 * HOUR,
     maxIconBytes = 512 * 1024,
     maxBackgroundBytes = 8 * 1024 * 1024,
   }) {
@@ -186,6 +188,7 @@ export class AssetResolver {
     this.lookup = lookup;
     this.iconTtlMs = iconTtlMs;
     this.backgroundTtlMs = backgroundTtlMs;
+    this.negativeTtlMs = negativeTtlMs;
     this.maxIconBytes = maxIconBytes;
     this.maxBackgroundBytes = maxBackgroundBytes;
   }
@@ -199,6 +202,12 @@ export class AssetResolver {
     const key = this.cache.key('brand', identity);
     const cached = this.cache.read(key);
     if (cached?.fresh) return { kind: 'brand', status: 'cache', fallback: fallbackInitials(brandName || id), ...cached };
+
+    const negative = this.cache.readMiss(key);
+    if (negative) {
+      if (cached) return { kind: 'brand', status: 'stale-cache', fallback: fallbackInitials(brandName || id), error: negative.metadata.error, ...cached };
+      return { kind: 'brand', status: 'negative-cache', key, fallback: fallbackInitials(brandName || id), error: negative.metadata.error };
+    }
 
     if (!host) {
       if (cached) return { kind: 'brand', status: 'stale-cache', fallback: fallbackInitials(brandName || id), ...cached };
@@ -228,6 +237,7 @@ export class AssetResolver {
       return { kind: 'brand', status: 'fetched', fallback: fallbackInitials(brandName || id), ...written };
     } catch (error) {
       if (cached) return { kind: 'brand', status: 'stale-cache', fallback: fallbackInitials(brandName || id), error: error.message, ...cached };
+      this.cache.writeMiss({ key, ttlMs: this.negativeTtlMs, scope: 'brand', identity, error: error.message });
       return { kind: 'brand', status: 'fallback', key, fallback: fallbackInitials(brandName || id), error: error.message };
     }
   }
@@ -240,6 +250,12 @@ export class AssetResolver {
     const key = this.cache.key('background', normalizedTheme);
     const cached = this.cache.read(key);
     if (cached?.fresh) return { kind: 'background', status: 'cache', theme: normalizedTheme, ...cached };
+
+    const negative = this.cache.readMiss(key);
+    if (negative) {
+      if (cached) return { kind: 'background', status: 'stale-cache', theme: normalizedTheme, error: negative.metadata.error, ...cached };
+      return { kind: 'background', status: 'negative-cache', theme: normalizedTheme, key, error: negative.metadata.error };
+    }
 
     try {
       const fetched = await fetchPublic(this.fetchImpl, sourceUrl, {
@@ -259,7 +275,8 @@ export class AssetResolver {
       return { kind: 'background', status: 'fetched', theme: normalizedTheme, ...written };
     } catch (error) {
       if (cached) return { kind: 'background', status: 'stale-cache', theme: normalizedTheme, error: error.message, ...cached };
-      return { kind: 'background', status: 'fallback', theme: normalizedTheme, error: error.message };
+      this.cache.writeMiss({ key, ttlMs: this.negativeTtlMs, scope: 'background', identity: normalizedTheme, error: error.message });
+      return { kind: 'background', status: 'fallback', theme: normalizedTheme, key, error: error.message };
     }
   }
 
