@@ -63,7 +63,7 @@ try {
 
   const fallback = await resolver.resolveBrand({ brandName: 'North & Pine' });
   assert.equal(fallback.status, 'fallback');
-  assert.equal(fallback.fallback, 'N&');
+  assert.equal(fallback.fallback, 'NP');
 
   const background = await resolver.resolveBackground({ theme: 'flight' });
   assert.equal(background.status, 'fetched');
