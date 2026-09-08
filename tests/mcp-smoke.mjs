@@ -25,7 +25,16 @@ try {
 
   const list = await request('tools/list');
   const names = list.result.tools.map(tool => tool.name);
-  for (const expected of ['life_show_execution', 'life_show_choices', 'life_show_capability_route', 'life_state_read', 'life_state_update']) assert.ok(names.includes(expected));
+  for (const expected of [
+    'life_show_execution',
+    'life_show_choices',
+    'life_show_capability_route',
+    'life_state_read',
+    'life_state_update',
+    'life_asset_resolve',
+    'life_asset_cache_status',
+    'life_asset_cache_clear_stale',
+  ]) assert.ok(names.includes(expected));
 
   const read = await request('tools/call', { name: 'life_state_read', arguments: {} });
   assert.match(read.result.content[0].text, /# Life Agent State/);
@@ -34,6 +43,16 @@ try {
   const write = await request('tools/call', { name: 'life_state_update', arguments: { content: updated, reason: 'smoke test' } });
   assert.equal(write.result.structuredContent.updated, true);
   assert.match(fs.readFileSync(path.join(dataDir, 'LIFE.md'), 'utf8'), /Prefer nonstop flights/);
+
+  const fallbackAsset = await request('tools/call', {
+    name: 'life_asset_resolve',
+    arguments: { kind: 'brand', brandName: 'North & Pine' },
+  });
+  assert.equal(fallbackAsset.result.structuredContent.status, 'fallback');
+  assert.equal(fallbackAsset.result.structuredContent.fallback, 'NP');
+
+  const cacheStatus = await request('tools/call', { name: 'life_asset_cache_status', arguments: {} });
+  assert.equal(cacheStatus.result.structuredContent.entries, 0);
 
   const resources = await request('resources/list');
   assert.equal(resources.result.resources.length, 3);
