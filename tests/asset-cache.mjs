@@ -38,7 +38,7 @@ try {
     });
   };
   const lookup = async () => [{ address: '93.184.216.34', family: 4 }];
-  const resolver = new AssetResolver({ cache, fetchImpl, lookup, iconTtlMs: 50, backgroundTtlMs: 50 });
+  const resolver = new AssetResolver({ cache, fetchImpl, lookup, iconTtlMs: 50, backgroundTtlMs: 50, negativeTtlMs: 25 });
 
   const first = await resolver.resolveBrand({ brandId: 'stripe', brandName: 'Stripe' });
   assert.equal(first.status, 'fetched');
@@ -56,6 +56,7 @@ try {
     fetchImpl: async () => { throw new Error('origin unavailable'); },
     lookup,
     iconTtlMs: 50,
+    negativeTtlMs: 25,
   });
   const stale = await failingResolver.resolveBrand({ brandId: 'stripe', brandName: 'Stripe' });
   assert.equal(stale.status, 'stale-cache');
@@ -64,6 +65,26 @@ try {
   const fallback = await resolver.resolveBrand({ brandName: 'North & Pine' });
   assert.equal(fallback.status, 'fallback');
   assert.equal(fallback.fallback, 'NP');
+
+  let failedFetches = 0;
+  const missResolver = new AssetResolver({
+    cache,
+    fetchImpl: async () => { failedFetches += 1; throw new Error('blocked'); },
+    lookup,
+    negativeTtlMs: 25,
+  });
+  const missed = await missResolver.resolveBrand({ brandId: 'blockedbrand', brandName: 'Blocked Brand', domain: 'blocked.example' });
+  assert.equal(missed.status, 'fallback');
+  assert.ok(failedFetches >= 1);
+  const fetchCountAfterMiss = failedFetches;
+  const negativeHit = await missResolver.resolveBrand({ brandId: 'blockedbrand', brandName: 'Blocked Brand', domain: 'blocked.example' });
+  assert.equal(negativeHit.status, 'negative-cache');
+  assert.equal(failedFetches, fetchCountAfterMiss);
+  assert.equal(cache.stats().misses, 1);
+
+  clock += 26;
+  await missResolver.resolveBrand({ brandId: 'blockedbrand', brandName: 'Blocked Brand', domain: 'blocked.example' });
+  assert.ok(failedFetches > fetchCountAfterMiss);
 
   const background = await resolver.resolveBackground({ theme: 'flight' });
   assert.equal(background.status, 'fetched');
