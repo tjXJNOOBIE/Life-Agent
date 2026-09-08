@@ -53,7 +53,11 @@ function normalizeDomain(value) {
 }
 
 function fallbackInitials(name) {
-  const words = String(name || '').trim().split(/\s+/).filter(Boolean);
+  const words = String(name || '')
+    .trim()
+    .split(/\s+/)
+    .map(word => word.replace(/[^a-z0-9]/gi, ''))
+    .filter(Boolean);
   if (words.length === 0) return '';
   return words.slice(0, 2).map(word => word[0]).join('').toUpperCase();
 }
