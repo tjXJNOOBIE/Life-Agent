@@ -17,6 +17,8 @@ const KNOWN_BRAND_DOMAINS = Object.freeze({
   alaska: 'alaskaair.com',
   apple: 'apple.com',
   delta: 'delta.com',
+  discord: 'discord.com',
+  github: 'github.com',
   hilton: 'hilton.com',
   hyatt: 'hyatt.com',
   lyft: 'lyft.com',
@@ -50,6 +52,8 @@ function normalizeDomain(value) {
   if (!raw) return null;
   const url = new URL(raw.includes('://') ? raw : `https://${raw}`);
   if (url.protocol !== 'https:') throw new Error('brand domain must use https');
+  if (url.username || url.password) throw new Error('brand domain may not contain credentials');
+  if (url.port && url.port !== '443') throw new Error('brand domain may only use port 443');
   return url.hostname;
 }
 
@@ -143,24 +147,37 @@ async function fetchPublic(fetchImpl, url, { maxBytes, acceptedTypes, lookup, ma
   throw new Error('too many redirects');
 }
 
+async function fetchPublicHtml(fetchImpl, url, { lookup, maxBytes = 256 * 1024, maxRedirects = 4 }) {
+  let current = new URL(url);
+  for (let redirect = 0; redirect <= maxRedirects; redirect += 1) {
+    await assertPublicUrl(current, lookup);
+    const response = await fetchImpl(current, {
+      redirect: 'manual',
+      headers: { accept: 'text/html', 'user-agent': 'Life-Agent-UI-Asset-Resolver/0.1' },
+    });
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get('location');
+      if (!location) throw new Error('redirect missing location');
+      current = new URL(location, current);
+      continue;
+    }
+    if (!response.ok) throw new Error(`homepage request failed with ${response.status}`);
+    const contentType = String(response.headers.get('content-type') || '').toLowerCase();
+    if (!contentType.startsWith('text/html')) throw new Error('homepage was not html');
+    return { html: (await readLimitedBody(response, maxBytes)).toString('utf8'), finalUrl: current };
+  }
+  throw new Error('too many redirects');
+}
+
 async function fetchHomepageIcon(fetchImpl, domain, { lookup, maxIconBytes }) {
-  const homepage = new URL(`https://${domain}/`);
-  await assertPublicUrl(homepage, lookup);
-  const response = await fetchImpl(homepage, {
-    redirect: 'manual',
-    headers: { accept: 'text/html', 'user-agent': 'Life-Agent-UI-Asset-Resolver/0.1' },
-  });
-  if (!response.ok) throw new Error(`homepage request failed with ${response.status}`);
-  const contentType = String(response.headers.get('content-type') || '').toLowerCase();
-  if (!contentType.startsWith('text/html')) throw new Error('homepage was not html');
-  const html = (await readLimitedBody(response, 256 * 1024)).toString('utf8');
+  const { html, finalUrl } = await fetchPublicHtml(fetchImpl, `https://${domain}/`, { lookup });
   const tags = html.match(/<link\b[^>]*>/gi) || [];
   for (const tag of tags) {
     const rel = tag.match(/\brel=["']([^"']+)["']/i)?.[1] || '';
     if (!/\b(?:shortcut\s+)?icon\b/i.test(rel)) continue;
     const href = tag.match(/\bhref=["']([^"']+)["']/i)?.[1];
     if (!href || href.startsWith('data:')) continue;
-    const candidate = new URL(href, homepage);
+    const candidate = new URL(href, finalUrl);
     try {
       return await fetchPublic(fetchImpl, candidate, { maxBytes: maxIconBytes, acceptedTypes: ICON_TYPES, lookup });
     } catch {
@@ -180,6 +197,7 @@ export class AssetResolver {
     negativeTtlMs = 6 * HOUR,
     maxIconBytes = 512 * 1024,
     maxBackgroundBytes = 8 * 1024 * 1024,
+    brandDomains = KNOWN_BRAND_DOMAINS,
   }) {
     if (!cache) throw new Error('cache is required');
     if (typeof fetchImpl !== 'function') throw new Error('fetch implementation is required');
@@ -191,12 +209,23 @@ export class AssetResolver {
     this.negativeTtlMs = negativeTtlMs;
     this.maxIconBytes = maxIconBytes;
     this.maxBackgroundBytes = maxBackgroundBytes;
+    this.brandDomains = Object.freeze({ ...brandDomains });
   }
 
   async resolveBrand({ brandId, brandName, domain } = {}) {
     const id = normalizeBrandId(brandId || brandName);
-    const host = normalizeDomain(domain || KNOWN_BRAND_DOMAINS[id]);
-    const identity = id || host;
+    const canonicalHost = this.brandDomains[id] ? normalizeDomain(this.brandDomains[id]) : null;
+    const requestedHost = domain ? normalizeDomain(domain) : null;
+    const identity = id || canonicalHost;
+
+    if (requestedHost && requestedHost !== canonicalHost) {
+      return {
+        kind: 'brand',
+        status: 'fallback',
+        fallback: fallbackInitials(brandName || id),
+        error: 'brand domain is not in the trusted canonical catalog',
+      };
+    }
     if (!identity) return { kind: 'brand', status: 'fallback', fallback: fallbackInitials(brandName) };
 
     const key = this.cache.key('brand', identity);
@@ -209,7 +238,7 @@ export class AssetResolver {
       return { kind: 'brand', status: 'negative-cache', key, fallback: fallbackInitials(brandName || id), error: negative.metadata.error };
     }
 
-    if (!host) {
+    if (!canonicalHost) {
       if (cached) return { kind: 'brand', status: 'stale-cache', fallback: fallbackInitials(brandName || id), ...cached };
       return { kind: 'brand', status: 'fallback', key, fallback: fallbackInitials(brandName || id) };
     }
@@ -217,13 +246,13 @@ export class AssetResolver {
     try {
       let fetched;
       try {
-        fetched = await fetchPublic(this.fetchImpl, `https://${host}/favicon.ico`, {
+        fetched = await fetchPublic(this.fetchImpl, `https://${canonicalHost}/favicon.ico`, {
           maxBytes: this.maxIconBytes,
           acceptedTypes: ICON_TYPES,
           lookup: this.lookup,
         });
       } catch {
-        fetched = await fetchHomepageIcon(this.fetchImpl, host, { lookup: this.lookup, maxIconBytes: this.maxIconBytes });
+        fetched = await fetchHomepageIcon(this.fetchImpl, canonicalHost, { lookup: this.lookup, maxIconBytes: this.maxIconBytes });
       }
       const written = this.cache.write({
         key,
@@ -236,8 +265,8 @@ export class AssetResolver {
       });
       return { kind: 'brand', status: 'fetched', fallback: fallbackInitials(brandName || id), ...written };
     } catch (error) {
-      if (cached) return { kind: 'brand', status: 'stale-cache', fallback: fallbackInitials(brandName || id), error: error.message, ...cached };
       this.cache.writeMiss({ key, ttlMs: this.negativeTtlMs, scope: 'brand', identity, error: error.message });
+      if (cached) return { kind: 'brand', status: 'stale-cache', fallback: fallbackInitials(brandName || id), error: error.message, ...cached };
       return { kind: 'brand', status: 'fallback', key, fallback: fallbackInitials(brandName || id), error: error.message };
     }
   }
@@ -274,8 +303,8 @@ export class AssetResolver {
       });
       return { kind: 'background', status: 'fetched', theme: normalizedTheme, ...written };
     } catch (error) {
-      if (cached) return { kind: 'background', status: 'stale-cache', theme: normalizedTheme, error: error.message, ...cached };
       this.cache.writeMiss({ key, ttlMs: this.negativeTtlMs, scope: 'background', identity: normalizedTheme, error: error.message });
+      if (cached) return { kind: 'background', status: 'stale-cache', theme: normalizedTheme, error: error.message, ...cached };
       return { kind: 'background', status: 'fallback', theme: normalizedTheme, key, error: error.message };
     }
   }
