@@ -27,7 +27,7 @@ assert.equal(linkedRoute.passwordRequiredByLifeAgent, false);
 
 const unlinkedRoute = resolveSiteAuthentication({ siteCapability: majorSso, linkedIdentities: [] });
 assert.equal(unlinkedRoute.mode, SiteAuthenticationMode.SSO_AVAILABLE);
-assert.equal(unlinkedRoute.identityProvider, 'MICROSOFT');
+assert.equal(unlinkedRoute.identityProvider, 'GOOGLE');
 
 const passwordOnly = createSiteAuthCapability({ origin: 'https://legacy.example', identityProviders: [], passwordFallback: true, verification: 'OBSERVED' });
 const passwordRoute = resolveSiteAuthentication({ siteCapability: passwordOnly, linkedIdentities: [] });
