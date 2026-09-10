@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import http from 'node:http';
+import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
 import readline from 'node:readline';
 import path from 'node:path';
@@ -118,6 +119,11 @@ async function handle(request, response) {
   }
   if (url.pathname !== '/mcp') { response.statusCode = 404; response.end('Not found'); return; }
   if (request.method !== 'POST') { response.statusCode = 405; response.setHeader('allow', 'POST, OPTIONS'); response.end('Method not allowed'); return; }
+  if (!authorized(request)) {
+    response.setHeader('www-authenticate', 'Bearer');
+    json(response, 401, { error: 'authenticated MCP access is required' });
+    return;
+  }
 
   try {
     const message = await readJson(request);
@@ -130,6 +136,22 @@ async function handle(request, response) {
 
 const host = process.env.LIFE_AGENT_HOST || '0.0.0.0';
 const port = Number(process.env.LIFE_AGENT_PORT || process.env.PORT || '3000');
+const authToken = String(process.env.LIFE_AGENT_HTTP_AUTH_TOKEN || '').trim();
+const loopback = host === '127.0.0.1' || host === '::1' || host === 'localhost';
+if (!loopback && authToken.length < 16) {
+  throw new Error('LIFE_AGENT_HTTP_AUTH_TOKEN with at least 16 characters is required for non-loopback HTTP hosting');
+}
+
+function authorized(request) {
+  if (authToken.length === 0) return loopback;
+  const value = String(request.headers.authorization || '');
+  const prefix = 'Bearer ';
+  if (!value.startsWith(prefix)) return false;
+  const supplied = Buffer.from(value.slice(prefix.length));
+  const expected = Buffer.from(authToken);
+  return supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected);
+}
+
 const server = http.createServer((request, response) => { void handle(request, response); });
 server.requestTimeout = 30_000;
 server.headersTimeout = 15_000;

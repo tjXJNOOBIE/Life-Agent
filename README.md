@@ -44,14 +44,17 @@ Tavall-hosted deployment. Configure an endpoint-owned absolute
 
 ```bash
 LIFE_AGENT_ASSET_CACHE_DIR=/var/lib/life-agent/assets \
+LIFE_AGENT_HTTP_AUTH_TOKEN='generate-a-secret-at-least-16-characters' \
 LIFE_AGENT_PORT=3000 npm run serve:http
 ```
 
 The adapter exposes `GET /healthz`, `POST /mcp`, and read-only
-`GET|HEAD /assets/<64-lowercase-hex-sha256>`. It wraps the same MCP server used
-by stdio and does not add provider credentials, arbitrary URL fetching, or
-provider mutation authority. A host supplies the Strands/model/provider loop
-and performs explicit HITL before consequential actions.
+`GET|HEAD /assets/<64-lowercase-hex-sha256>`. Loopback development may omit the
+token; a non-loopback bind fails closed unless the bearer token is configured.
+It wraps the same MCP server used by stdio and does not add provider
+credentials, arbitrary URL fetching, or provider mutation authority. A host
+supplies the Strands/model/provider loop and performs explicit HITL before
+consequential actions.
 
 ## MCP and security boundaries
 
