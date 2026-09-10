@@ -56,6 +56,10 @@ credentials, arbitrary URL fetching, or provider mutation authority. A host
 supplies the Strands/model/provider loop and performs explicit HITL before
 consequential actions.
 
+### Current Tavall acceptance deployment
+
+The merged `main` commit `8b489a0691d56ca02448868a7d073b1b6e5dca52` is registered in Tavall Cloud as `life-agent-hosted-demo`, owned by `dev-storage`, using the canonical `EXTERNAL_SYSTEMD` service lifecycle and unit `e2e-life-agent-hosted-demo.service`. Tavall reports the service `RUNNING` after start and restart; the loopback acceptance URL is `http://127.0.0.1:3300`. Public HTTPS/tunnel exposure is intentionally not claimed until tunnel authorization and DNS/proxy ownership are available.
+
 ## MCP and security boundaries
 
 The stdio server supports legacy MCP `2025-11-25` and current MCP `2026-07-28`. Current clients can use `server/discover`; list/resource results carry explicit discriminator and cache metadata, while tool calls are explicitly uncached.
