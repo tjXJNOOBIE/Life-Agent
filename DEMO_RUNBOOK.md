@@ -27,7 +27,8 @@ The hosted adapter exposes `POST /mcp` and read-only `/assets/<sha256>`. Verify
 `initialize`, `server/discover`, `tools/list`, `resources/list`, and one
 `resources/read` call, then terminate and restart the adapter. Provider auth,
 payment, and consequential actions remain host/provider-owned and require an
-explicit human approval boundary.
+explicit human approval boundary. A non-loopback deployment must send
+`Authorization: Bearer $LIFE_AGENT_HTTP_AUTH_TOKEN`; `/healthz` remains public.
 
 ## Evidence boundary
 
