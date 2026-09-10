@@ -32,6 +32,11 @@ See [README.md](README.md), [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md), and
 dependency-free protocol/security suite. The local HTTP adapter is started with
 `npm run serve:http`.
 
+Current controlled deployment: Tavall service `life-agent-hosted-demo`, merged
+commit `8b489a0691d56ca02448868a7d073b1b6e5dca52`, loopback MCP
+`http://127.0.0.1:3300/mcp`. Public HTTPS and provider-side consequences remain
+unclaimed.
+
 ## Pre-existing components disclosure
 
 The Life Agent product/UI contract was built for this hackathon. It reuses

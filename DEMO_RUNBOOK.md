@@ -30,9 +30,17 @@ payment, and consequential actions remain host/provider-owned and require an
 explicit human approval boundary. A non-loopback deployment must send
 `Authorization: Bearer $LIFE_AGENT_HTTP_AUTH_TOKEN`; `/healthz` remains public.
 
+The current Tavall-hosted acceptance service is `life-agent-hosted-demo` at
+merged commit `8b489a0691d56ca02448868a7d073b1b6e5dca52`, with loopback MCP at
+`http://127.0.0.1:3300/mcp`. Tavall start/restart, health, initialize, tool
+discovery, resource discovery, and execution-resource read were physically
+verified. This is a controlled host acceptance deployment, not a public judge
+endpoint.
+
 ## Evidence boundary
 
-The repository currently proves protocol, UI, state-safety, browser-lease, and
-retry semantics. It does not claim a real Google/Microsoft/GitHub/Discord
-authentication ceremony, a provider-side booking, or a public deployment until
-those external gates are executed with authorized accounts.
+The repository and controlled Tavall service prove protocol, UI, state-safety,
+browser-lease, retry semantics, and hosted adapter lifecycle. They do not claim
+a real Google/Microsoft/GitHub/Discord authentication ceremony, a provider-side
+booking, or a public deployment until those external gates are executed with
+authorized accounts.
