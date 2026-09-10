@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "test": "node tests/browser-auth.mjs && node tests/site-auth.mjs && node tests/approval-policy.mjs && node tests/mutation-retry.mjs && node tests/asset-cache.mjs && node tests/asset-route.mjs && node tests/asset-storage.mjs && node tests/structured-content.mjs && node tests/mcp-protocol.mjs && node tests/glass-ui.mjs && node tests/manifests.mjs && node tests/mcp-smoke.mjs"
+    "test": "node tests/browser-auth.mjs && node tests/site-auth.mjs && node tests/approval-policy.mjs && node tests/mutation-retry.mjs && node tests/asset-cache.mjs && node tests/asset-route.mjs && node tests/asset-storage.mjs && node tests/structured-content.mjs && node tests/mcp-protocol.mjs && node tests/glass-ui.mjs && node tests/manifests.mjs && node tests/mcp-smoke.mjs",
+    "serve:http": "node plugins/life-agent/server/http.mjs"
   }
 }

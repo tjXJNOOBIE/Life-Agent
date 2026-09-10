@@ -1,0 +1,37 @@
+# Life Agent demo runbook
+
+## Local protocol demo
+
+```bash
+git clone https://github.com/tjXJNOOBIE/Life-Agent.git
+cd Life-Agent
+npm test
+PLUGIN_DATA="$(mktemp -d)" node plugins/life-agent/server/server.mjs
+```
+
+Use an MCP client over stdio. Initialize once with either `2025-11-25` or
+`2026-07-28`, list tools/resources, read one UI resource, then call
+`life_show_choices`, `life_show_commitment`, and `life_show_outcome` with
+server-sanitized representative data. This validates the UI/protocol boundary;
+it is not a provider booking.
+
+## Hosted adapter smoke
+
+```bash
+LIFE_AGENT_ASSET_CACHE_DIR=/var/lib/life-agent/assets \
+LIFE_AGENT_PORT=3000 npm run serve:http
+curl -fsS http://127.0.0.1:3000/healthz
+```
+
+The hosted adapter exposes `POST /mcp` and read-only `/assets/<sha256>`. Verify
+`initialize`, `server/discover`, `tools/list`, `resources/list`, and one
+`resources/read` call, then terminate and restart the adapter. Provider auth,
+payment, and consequential actions remain host/provider-owned and require an
+explicit human approval boundary.
+
+## Evidence boundary
+
+The repository currently proves protocol, UI, state-safety, browser-lease, and
+retry semantics. It does not claim a real Google/Microsoft/GitHub/Discord
+authentication ceremony, a provider-side booking, or a public deployment until
+those external gates are executed with authorized accounts.
