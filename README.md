@@ -58,7 +58,7 @@ consequential actions.
 
 ### Current Tavall acceptance deployment
 
-The merged `main` commit `8b489a0691d56ca02448868a7d073b1b6e5dca52` is registered in Tavall Cloud as `life-agent-hosted-demo`, owned by `dev-storage`, using the canonical `EXTERNAL_SYSTEMD` service lifecycle and unit `e2e-life-agent-hosted-demo.service`. Tavall reports the service `RUNNING` after start and restart; the loopback acceptance URL is `http://127.0.0.1:3300`. Public HTTPS/tunnel exposure is intentionally not claimed until tunnel authorization and DNS/proxy ownership are available.
+The merged `main` commit `0d1dce8d15d8d5cf7dbf1d58f0c64fce555b351d` is registered in Tavall Cloud as `life-agent-hosted-demo`, owned by `dev-storage`, using the canonical `EXTERNAL_SYSTEMD` service lifecycle and unit `e2e-life-agent-hosted-demo.service`. Tavall reports the service `RUNNING` after start and restart; the loopback acceptance URL is `http://127.0.0.1:3300`. Public HTTPS/tunnel exposure is intentionally not claimed until tunnel authorization and DNS/proxy ownership are available.
 
 ## MCP and security boundaries
 
