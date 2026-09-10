@@ -72,6 +72,7 @@ try {
     assert.match(html, /ui\/teardown/);
     assert.match(html, /2026-01-26/);
     assert.doesNotMatch(html, /toolInput/);
+    assert.doesNotMatch(html, /https?:\/\//);
     assert.doesNotMatch(html, /\bfetch\s*\(/);
     assert.doesNotMatch(html, /\bWebSocket\b|localStorage|document\.cookie|<base\b/i);
   }

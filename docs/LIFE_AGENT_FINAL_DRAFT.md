@@ -53,7 +53,7 @@ The production resources and matching tools are:
 | Settings | `ui://life-agent/settings-v2.html` | `life_show_settings` |
 | Capability Route | `ui://life-agent/capability-route-v2.html` | `life_show_capability_route` |
 
-The accepted visual contract is the dark contextual Glass UI System. Shared CSS preserves the Apple system font stack, compact density, dark translucent glass, restrained borders, 22px outer material radius, 16px option cards, compact 3-up choices, provider marks, and progressive disclosure.
+The accepted visual contract is the dark contextual Glass UI System. Shared CSS is checked against `fixtures/life-agent-glass-ui-system.html`, locked at 37,404 bytes and SHA-256 `f497d59d4cb86493009dc9412bbe60dfde313d0516e8b1cbbf47228967e6b7f5`, while external image URLs are replaced at runtime by controlled endpoint asset data. It preserves the Apple system font stack, compact density, dark translucent glass, restrained borders, 22px outer material radius, 16px option cards, compact 3-up choices, provider marks, and progressive disclosure.
 
 MCP Apps view behavior uses `2026-01-26`: widgets handle `ui/initialize`, host model-context updates, `ui/update-model-context` for small decisions, `ui/message` for explicit continuation CTAs, sizing, and teardown. They render server-sanitized `toolOutput` only. Production CSP disables network connections, storage, cookies, arbitrary forms, base tags, and third-party rendering.
 

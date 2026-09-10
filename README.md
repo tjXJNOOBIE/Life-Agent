@@ -18,7 +18,7 @@ The dependency-free MCP server exposes seven production UI resources and matchin
 6. Settings — preferences, standing permissions, and safe identity metadata.
 7. Capability Route — capability-first/provider-second routing evidence.
 
-The accepted visual language is the dark Apple-like contextual Glass UI System: compact dense layouts, restrained blurred glass, recognizable provider marks, 22px outer materials, 16px option cards, progressive disclosure, and one obvious primary action. UI resources are versioned as `ui://life-agent/*-v2.html` and speak the MCP Apps view contract `2026-01-26`.
+The accepted visual language is the dark Apple-like contextual Glass UI System: compact dense layouts, restrained blurred glass, recognizable provider marks, 22px outer materials, 16px option cards, progressive disclosure, and one obvious primary action. The checked-in reference fixture `fixtures/life-agent-glass-ui-system.html` is locked at 37,404 bytes with SHA-256 `f497d59d4cb86493009dc9412bbe60dfde313d0516e8b1cbbf47228967e6b7f5`. UI resources are versioned as `ui://life-agent/*-v2.html` and speak the MCP Apps view contract `2026-01-26`.
 
 ## Install for local ChatGPT Desktop testing
 

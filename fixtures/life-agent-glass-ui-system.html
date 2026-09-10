@@ -1,0 +1,204 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Life Agent Glass UI System</title><style>
+:root{color-scheme:dark;--text:rgba(255,255,255,.97);--secondary:rgba(255,255,255,.78);--tertiary:rgba(255,255,255,.56);--hairline:rgba(255,255,255,.13);--good:#a6eabd;--warn:#f2d19b;--danger:#ffaaa8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 10% 0,#28303a 0,transparent 29%),radial-gradient(circle at 92% 8%,#1d2531 0,transparent 31%),#0b0c0e;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.page{max-width:1160px;margin:auto;padding:24px 22px 70px}.hero{display:flex;justify-content:space-between;gap:18px;align-items:end;margin-bottom:18px}.hero h1{margin:0;font-size:30px;line-height:1;letter-spacing:-.045em}.hero p{margin:8px 0 0;color:var(--secondary);font-size:14px;max-width:720px}.local{font-size:11px;color:var(--secondary);border:1px solid var(--hairline);background:rgba(255,255,255,.06);padding:7px 10px;border-radius:999px;backdrop-filter:blur(20px)}
+.nav{position:sticky;top:10px;z-index:20;display:flex;gap:5px;width:max-content;max-width:100%;overflow:auto;margin:0 auto 22px;padding:5px;border:1px solid var(--hairline);background:rgba(17,18,21,.66);backdrop-filter:blur(28px) saturate(150%);border-radius:999px}.nav button{border:0;background:transparent;color:var(--secondary);font:600 12px inherit;padding:7px 11px;border-radius:999px;white-space:nowrap;cursor:pointer}.nav button.active{background:rgba(255,255,255,.13);color:#fff}.view{display:none}.view.active{display:block}
+.section-title{font-size:12px;font-weight:650;color:var(--secondary);margin:22px 0 9px 4px}.section-copy{font-size:12px;color:var(--tertiary);margin:-4px 0 9px 4px}.gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}
+.glass{--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72');position:relative;overflow:hidden;border:1px solid var(--hairline);border-radius:22px;isolation:isolate;box-shadow:0 15px 38px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}.glass::before{content:"";position:absolute;inset:-12px;background:var(--bg) center/cover;filter:blur(6px) saturate(.96) brightness(.55);transform:scale(1.03);z-index:0}.glass::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,14,16,.66),rgba(14,15,17,.44) 55%,rgba(14,15,17,.58)),linear-gradient(rgba(255,255,255,.05),transparent);z-index:0}.glass>*{position:relative;z-index:1}
+.bg-flight{--bg:url('https://images.unsplash.com/photo-1757865579141-4cde5cf8ea0c?auto=format&fit=crop&w=2400&q=72')}.bg-dining{--bg:url('https://images.unsplash.com/photo-1734770295030-048576b442d9?auto=format&fit=crop&w=2400&q=72')}.bg-office{--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72')}.bg-drive{--bg:url('https://images.unsplash.com/photo-1588192754695-ea55aef5117f?auto=format&fit=crop&fm=jpg&q=68&w=2400')}.bg-event{--bg:url('https://images.unsplash.com/photo-1579696412992-6c3706e96cdf?auto=format&fit=crop&q=68&w=2400')}.bg-hotel{--bg:url('https://image-tc.galaxy.tf/wijpeg-c13ra4ugfrm18042rz2axg16n/1-bespoke-13th_standard.jpg?crop=112%2C0%2C1777%2C1333&width=1600')}.bg-clinic{--bg:url('https://www.gcimed.com/resources/images/brand/sub1/center_3_img03_m.jpg')}.bg-shop{--bg:url('https://www.akropolis.lt/image/15677534038459_430_430_1.jpg')}.bg-repair{--bg:url('https://wherecrowded.sg/at/storage/images_p/95062-tn.jpg')}
+.head{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 16px 12px}.title{font-size:18px;letter-spacing:-.022em;font-weight:680}.subtitle{font-size:13px;color:var(--secondary);margin-top:4px;letter-spacing:-.01em}
+.btn{appearance:none;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.10);color:#fff;border-radius:999px;min-height:34px;padding:0 12px;font:600 12.5px inherit;backdrop-filter:blur(18px) saturate(150%);cursor:pointer}.btn.primary{background:rgba(255,255,255,.93);color:#141416;border-color:rgba(255,255,255,.86)}.btn.danger{color:#ffc1c0}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 11px 11px}.option{min-width:0;border:1px solid rgba(255,255,255,.11);background:rgba(18,19,22,.39);backdrop-filter:blur(25px) saturate(145%);border-radius:16px;padding:11px 12px 10px}.option.best{border-color:rgba(255,255,255,.32);background:rgba(24,25,28,.49)}.option.extra{display:none}.expanded .option.extra{display:block}
+.top{display:flex;justify-content:space-between;gap:8px;align-items:center}.name{display:flex;align-items:center;gap:7px;min-width:0;font-size:13.5px;font-weight:660;letter-spacing:-.012em}.icon{width:17px;height:17px;border-radius:999px;object-fit:contain;background:rgba(255,255,255,.12);box-shadow:0 0 0 1px rgba(255,255,255,.1);flex:0 0 auto}.fallback{width:17px;height:17px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.10);font-size:8.5px;font-weight:720;flex:0 0 auto}.value{font-size:14px;font-weight:700;white-space:nowrap}.main{font-size:18px;line-height:1.14;font-weight:700;letter-spacing:-.028em;margin-top:5px}.meta{font-size:12px;color:var(--secondary);margin-top:3px}.tags{font-size:11px;color:rgba(255,255,255,.84);margin-top:9px}.tags span+span:before{content:" • ";color:rgba(255,255,255,.34)}.foot{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:10px;font-size:11px}.reason{color:var(--tertiary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.choose{font-weight:660}
+.confirm-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}.confirm{--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72');width:350px;max-width:100%;position:relative;overflow:hidden;border:1px solid var(--hairline);border-radius:20px;isolation:isolate;box-shadow:0 16px 42px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.04)}.confirm::before{content:"";position:absolute;inset:-10px;background:var(--bg) center/cover;filter:blur(6px) brightness(.5) saturate(.96);transform:scale(1.03);z-index:0}.confirm::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(14,15,17,.50),rgba(14,15,17,.76));z-index:0}.confirm>*{position:relative;z-index:1}.confirm.flight{--bg:url('https://images.unsplash.com/photo-1757865579141-4cde5cf8ea0c?auto=format&fit=crop&w=2400&q=72')}.confirm.dining{--bg:url('https://images.unsplash.com/photo-1734770295030-048576b442d9?auto=format&fit=crop&w=2400&q=72')}.confirm.hotel{--bg:url('https://image-tc.galaxy.tf/wijpeg-c13ra4ugfrm18042rz2axg16n/1-bespoke-13th_standard.jpg?crop=112%2C0%2C1777%2C1333&width=1600')}.confirm.clinic{--bg:url('https://www.gcimed.com/resources/images/brand/sub1/center_3_img03_m.jpg')}.confirm.drive{--bg:url('https://images.unsplash.com/photo-1588192754695-ea55aef5117f?auto=format&fit=crop&fm=jpg&q=68&w=2400')}.confirm.event{--bg:url('https://images.unsplash.com/photo-1579696412992-6c3706e96cdf?auto=format&fit=crop&q=68&w=2400')}.confirm.shop{--bg:url('https://www.akropolis.lt/image/15677534038459_430_430_1.jpg')}
+.confirm-body{padding:15px}.brand{display:flex;justify-content:center;align-items:center;gap:7px;margin-bottom:9px;font-size:11.5px;color:var(--secondary);font-weight:600}.confirm h3{font-size:17px;text-align:center;margin:0;letter-spacing:-.02em}.confirm p{font-size:12.5px;color:var(--secondary);text-align:center;margin:4px 0 12px}.kv{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;margin-top:7px}.kv span{color:var(--secondary)}.kv b{font-weight:650}.actions{display:flex;justify-content:center;gap:8px;margin-top:14px}
+.handoff{width:min(460px,100%);padding:15px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:11px;align-items:center}.handoff-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.1);font-size:16px}.handoff strong{display:block;font-size:15px;letter-spacing:-.015em}.handoff span{display:block;margin-top:3px;color:var(--secondary);font-size:12px}
+.settings-shell{padding:14px}.settings-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.settings-head h3{margin:0;font-size:17px;letter-spacing:-.02em}.settings-head span{color:var(--secondary);font-size:12px}.setting-group{border:1px solid rgba(255,255,255,.10);background:rgba(18,19,22,.37);backdrop-filter:blur(24px);border-radius:16px;overflow:hidden;margin-top:9px}.setting{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:11px 12px;border-top:1px solid rgba(255,255,255,.08)}.setting:first-child{border-top:0}.setting strong{font-size:13px;font-weight:650}.setting p{font-size:11.5px;color:var(--secondary);margin:2px 0 0}
+.toggle{width:42px;height:24px;border-radius:999px;background:rgba(255,255,255,.14);padding:3px;cursor:pointer;transition:.18s}.toggle:after{content:"";display:block;width:18px;height:18px;border-radius:50%;background:#fff;transition:.18s}.toggle.on{background:rgba(151,207,255,.65)}.toggle.on:after{transform:translateX(18px)}.segment{display:flex;padding:3px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.06);border-radius:999px}.segment span{padding:5px 8px;border-radius:999px;font-size:10.5px;color:var(--secondary)}.segment span.on{background:rgba(255,255,255,.14);color:#fff}.cache-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.cache-stat{border:1px solid rgba(255,255,255,.09);background:rgba(18,19,22,.35);border-radius:13px;padding:10px}.cache-stat b{display:block;font-size:16px}.cache-stat span{font-size:10.5px;color:var(--secondary)}
+@media(max-width:820px){.gallery{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.cache-grid{grid-template-columns:repeat(2,1fr)}.handoff{grid-template-columns:auto 1fr}.handoff .btn{grid-column:1/-1}}
+</style></head><body><div class="page">
+<div class="hero"><div><h1>Life Agent UI system</h1><p>One glass language across choices, confirmations, handoffs, settings, and asset states. Backgrounds and recognizable brand marks change with context; the component grammar does not.</p></div><div class="local">LOCAL DESIGN SYSTEM</div></div>
+<div class="nav"><button class="active" onclick="showView('choices',this)">Choices</button><button onclick="showView('confirmations',this)">Confirmations</button><button onclick="showView('handoffs',this)">Handoffs</button><button onclick="showView('settings',this)">Settings</button></div>
+<div class="view active" id="choices">
+<div class="section-title">Travel & reservations</div>
+<div class="gallery">
+<div class="glass bg-flight full">
+  <div class="head"><div><div class="title">Choose a flight</div><div class="subtitle">3 best fits · nonstop · around 10 AM</div></div><button class="btn" onclick="expandOptions('flightOptions',this)">More</button></div>
+  <div class="grid3" id="flightOptions">
+    <div class="option best"><div class="top"><div class="name">Alaska 421 <img class="icon" src="https://www.alaskaair.com/favicon.ico"></div><div class="value">$284</div></div><div class="main">10:20 → 1:09</div><div class="meta">LAX → SEA · 2h 49m</div><div class="tags"><span>Nonstop</span><span>Best fit</span><span>Carry-on</span></div><div class="foot"><div class="reason">Closest to your preferred time</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Delta 881 <img class="icon" src="https://www.delta.com/favicon.ico"></div><div class="value">$251</div></div><div class="main">9:50 → 2:02</div><div class="meta">LAX → SEA · 4h 12m</div><div class="tags"><span>1 stop</span><span>Cheapest</span></div><div class="foot"><div class="reason">Save $33, lose two hours</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">United 204 <img class="icon" src="https://www.united.com/favicon.ico"></div><div class="value">$319</div></div><div class="main">11:05 → 1:51</div><div class="meta">LAX → SEA · 2h 46m</div><div class="tags"><span>Nonstop</span><span>Later</span></div><div class="foot"><div class="reason">Simple later fallback</div><div class="choose">Choose</div></div></div>
+    <div class="option extra"><div class="top"><div class="name">Alaska 515 <img class="icon" src="https://www.alaskaair.com/favicon.ico"></div><div class="value">$297</div></div><div class="main">1:15 → 4:04</div><div class="meta">LAX → SEA · 2h 49m</div><div class="tags"><span>Nonstop</span><span>Afternoon</span></div><div class="foot"><div class="reason">Later but direct</div><div class="choose">Choose</div></div></div>
+    <div class="option extra"><div class="top"><div class="name">Delta 1023 <img class="icon" src="https://www.delta.com/favicon.ico"></div><div class="value">$268</div></div><div class="main">8:10 → 10:58</div><div class="meta">LAX → SEA · 2h 48m</div><div class="tags"><span>Nonstop</span><span>Earlier</span></div><div class="foot"><div class="reason">Early direct option</div><div class="choose">Choose</div></div></div>
+    <div class="option extra"><div class="top"><div class="name">United 876 <img class="icon" src="https://www.united.com/favicon.ico"></div><div class="value">$239</div></div><div class="main">6:55 → 12:20</div><div class="meta">LAX → SEA · 5h 25m</div><div class="tags"><span>1 stop</span><span>Lowest fare</span></div><div class="foot"><div class="reason">Cheap, inconvenient</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+<div class="glass bg-hotel">
+  <div class="head"><div><div class="title">Choose a hotel</div><div class="subtitle">Seattle · 2 nights · downtown</div></div><button class="btn">More</button></div>
+  <div class="grid3">
+    <div class="option best"><div class="top"><div class="name">Hyatt Regency <img class="icon" src="https://www.hyatt.com/favicon.ico"></div><div class="value">$219</div></div><div class="main">0.4 mi</div><div class="meta">Downtown · 4.5★</div><div class="tags"><span>Best fit</span><span>Gym</span></div><div class="foot"><div class="reason">Closest + good value</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Hilton <img class="icon" src="https://www.hilton.com/favicon.ico"></div><div class="value">$196</div></div><div class="main">0.8 mi</div><div class="meta">Downtown · 4.3★</div><div class="tags"><span>Cheaper</span><span>Breakfast</span></div><div class="foot"><div class="reason">Save $46 total</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Marriott <img class="icon" src="https://www.marriott.com/favicon.ico"></div><div class="value">$244</div></div><div class="main">0.2 mi</div><div class="meta">Waterfront · 4.6★</div><div class="tags"><span>Closest</span><span>View</span></div><div class="foot"><div class="reason">Best location</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+<div class="glass bg-dining">
+  <div class="head"><div><div class="title">Choose dinner</div><div class="subtitle">Saturday · 7 PM · 2 people</div></div><button class="btn">More</button></div>
+  <div class="grid3">
+    <div class="option best"><div class="top"><div class="name">North & Pine <span class="fallback">NP</span></div><div class="value">7:15</div></div><div class="main">Modern American</div><div class="meta">18 min · $$$</div><div class="tags"><span>Best fit</span><span>Quiet</span></div><div class="foot"><div class="reason">Time + atmosphere</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Bar Luca <span class="fallback">BL</span></div><div class="value">6:45</div></div><div class="main">Italian</div><div class="meta">12 min · $$</div><div class="tags"><span>Earlier</span><span>Casual</span></div><div class="foot"><div class="reason">Closer + cheaper</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Mori <span class="fallback">M</span></div><div class="value">7:30</div></div><div class="main">Japanese</div><div class="meta">24 min · $$$</div><div class="tags"><span>Later</span><span>Top rated</span></div><div class="foot"><div class="reason">Best food match</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+</div>
+<div class="section-title">Appointments, services & errands</div>
+<div class="gallery">
+<div class="glass bg-clinic">
+  <div class="head"><div><div class="title">Choose an appointment</div><div class="subtitle">Annual physical · next week</div></div><button class="btn">More</button></div>
+  <div class="grid3">
+    <div class="option best"><div class="top"><div class="name">One Medical <img class="icon" src="https://www.onemedical.com/favicon.ico"></div><div class="value">Tue</div></div><div class="main">10:30 AM</div><div class="meta">Downtown · 14 min</div><div class="tags"><span>Best fit</span><span>In network</span></div><div class="foot"><div class="reason">Best calendar fit</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Primary Care <span class="fallback">PC</span></div><div class="value">Wed</div></div><div class="main">2:00 PM</div><div class="meta">Westside · 21 min</div><div class="tags"><span>Afternoon</span></div><div class="foot"><div class="reason">No morning conflict</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Health Center <span class="fallback">HC</span></div><div class="value">Fri</div></div><div class="main">9:00 AM</div><div class="meta">Central · 17 min</div><div class="tags"><span>Earliest</span></div><div class="foot"><div class="reason">Soonest available</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+<div class="glass bg-repair">
+  <div class="head"><div><div class="title">Choose a repair shop</div><div class="subtitle">Grinding noise · today if possible</div></div><button class="btn">More</button></div>
+  <div class="grid3">
+    <div class="option best"><div class="top"><div class="name">Firestone <img class="icon" src="https://www.firestonecompleteautocare.com/favicon.ico"></div><div class="value">1:30</div></div><div class="main">4.6★</div><div class="meta">3.2 mi · inspection today</div><div class="tags"><span>Best fit</span><span>Today</span></div><div class="foot"><div class="reason">Soonest reputable option</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Midas <img class="icon" src="https://www.midas.com/favicon.ico"></div><div class="value">3:00</div></div><div class="main">4.5★</div><div class="meta">2.4 mi · today</div><div class="tags"><span>Closer</span></div><div class="foot"><div class="reason">Shortest drive</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Local Auto <span class="fallback">LA</span></div><div class="value">Tomorrow</div></div><div class="main">4.8★</div><div class="meta">1.8 mi · 9 AM</div><div class="tags"><span>Top rated</span></div><div class="foot"><div class="reason">Best reviews</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+
+<div class="glass bg-drive">
+  <div class="head"><div><div class="title">Choose a ride</div><div class="subtitle">Airport · arrive by 8:40 AM</div></div><button class="btn">More</button></div>
+  <div class="grid3">
+    <div class="option best"><div class="top"><div class="name">Uber <img class="icon" src="https://www.uber.com/favicon.ico"></div><div class="value">$38</div></div><div class="main">7:42 AM</div><div class="meta">Pickup · 34 min</div><div class="tags"><span>Best fit</span><span>Direct</span></div><div class="foot"><div class="reason">Best buffer</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Lyft <img class="icon" src="https://www.lyft.com/favicon.ico"></div><div class="value">$35</div></div><div class="main">7:38 AM</div><div class="meta">Pickup · 37 min</div><div class="tags"><span>Cheapest</span></div><div class="foot"><div class="reason">Save $3</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Taxi <span class="fallback">T</span></div><div class="value">$52</div></div><div class="main">7:45 AM</div><div class="meta">Pickup · 32 min</div><div class="tags"><span>Fixed</span></div><div class="foot"><div class="reason">Simple fallback</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+<div class="glass bg-shop">
+  <div class="head"><div><div class="title">Choose a laptop</div><div class="subtitle">Travel-friendly · dev work · under $2,000</div></div><button class="btn">More</button></div>
+  <div class="grid3">
+    <div class="option best"><div class="top"><div class="name">MacBook Air <img class="icon" src="https://www.apple.com/favicon.ico"></div><div class="value">$1,499</div></div><div class="main">15″ · M4</div><div class="meta">24 GB · 512 GB</div><div class="tags"><span>Best fit</span><span>Light</span></div><div class="foot"><div class="reason">Best portability</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">ThinkPad X1 <img class="icon" src="https://www.lenovo.com/favicon.ico"></div><div class="value">$1,729</div></div><div class="main">14″</div><div class="meta">32 GB · 1 TB</div><div class="tags"><span>More RAM</span></div><div class="foot"><div class="reason">Best dev spec</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">Surface Laptop <img class="icon" src="https://www.microsoft.com/favicon.ico"></div><div class="value">$1,599</div></div><div class="main">15″</div><div class="meta">32 GB · 512 GB</div><div class="tags"><span>Windows</span></div><div class="foot"><div class="reason">Balanced option</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+<div class="glass bg-event full">
+  <div class="head"><div><div class="title">Choose tickets</div><div class="subtitle">2 seats · good view · under $300 total</div></div><button class="btn">More</button></div>
+  <div class="grid3">
+    <div class="option best"><div class="top"><div class="name">Ticketmaster <img class="icon" src="https://www.ticketmaster.com/favicon.ico"></div><div class="value">$248</div></div><div class="main">Section 112</div><div class="meta">Row 14 · 2 seats</div><div class="tags"><span>Best fit</span><span>Instant</span></div><div class="foot"><div class="reason">Best view under budget</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">SeatGeek <img class="icon" src="https://seatgeek.com/favicon.ico"></div><div class="value">$226</div></div><div class="main">Section 118</div><div class="meta">Row 19 · 2 seats</div><div class="tags"><span>Cheapest</span></div><div class="foot"><div class="reason">Save $22</div><div class="choose">Choose</div></div></div>
+    <div class="option"><div class="top"><div class="name">StubHub <img class="icon" src="https://www.stubhub.com/favicon.ico"></div><div class="value">$289</div></div><div class="main">Section 104</div><div class="meta">Row 9 · 2 seats</div><div class="tags"><span>Closer</span></div><div class="foot"><div class="reason">Better view</div><div class="choose">Choose</div></div></div>
+  </div>
+</div>
+</div></div>
+
+<div class="view" id="confirmations">
+<div class="section-title">Compact confirmations</div><div class="section-copy">The outcome card is the final card. No nested card circus.</div>
+<div class="confirm-row">
+  <div class="confirm flight"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.alaskaair.com/favicon.ico">Alaska Airlines</div><h3>Flight booked</h3><p>Seattle · Fri, Sep 18 · 10:20 AM</p><div class="kv"><span>Confirmation</span><b>7K2XQF</b></div><div class="kv"><span>Calendar</span><b>Added</b></div><div class="actions"><button class="btn">Details</button><button class="btn primary">Done</button></div></div></div>
+  <div class="confirm hotel"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.hyatt.com/favicon.ico">Hyatt</div><h3>Hotel reserved</h3><p>2 nights · downtown Seattle</p><div class="kv"><span>Check-in</span><b>Sep 18</b></div><div class="kv"><span>Total</span><b>$438</b></div><div class="actions"><button class="btn">View</button><button class="btn primary">Done</button></div></div></div>
+  <div class="confirm dining"><div class="confirm-body"><div class="brand"><span class="fallback">NP</span>North & Pine</div><h3>Table reserved</h3><p>Saturday · 7:15 PM · 2 people</p><div class="kv"><span>Calendar</span><b>Updated</b></div><div class="kv"><span>Reminder</span><b>Provider handles it</b></div><div class="actions"><button class="btn">Change</button><button class="btn primary">Done</button></div></div></div>
+  <div class="confirm clinic"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.onemedical.com/favicon.ico">One Medical</div><h3>Appointment moved</h3><p>Tuesday · 10:30 AM</p><div class="kv"><span>Old time</span><b>Thursday 3 PM</b></div><div class="kv"><span>Calendar</span><b>Synced</b></div><div class="actions"><button class="btn">View</button><button class="btn primary">Done</button></div></div></div>
+  <div class="confirm event"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.ticketmaster.com/favicon.ico">Ticketmaster</div><h3>Tickets purchased</h3><p>2 seats · Section 112 · Row 14</p><div class="kv"><span>Total</span><b>$248</b></div><div class="kv"><span>Calendar</span><b>Added</b></div><div class="actions"><button class="btn">Tickets</button><button class="btn primary">Done</button></div></div></div>
+  <div class="confirm" style="--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72')"><div class="confirm-body"><div class="brand"><img class="icon" src="https://stripe.com/favicon.ico">Stripe</div><h3>Invoice sent</h3><p>Acme · $4,000</p><div class="kv"><span>Due</span><b>Oct 8</b></div><div class="kv"><span>Follow-up</span><b>Queued</b></div><div class="actions"><button class="btn">Open</button><button class="btn primary">Done</button></div></div></div>
+  <div class="confirm" style="--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72')"><div class="confirm-body"><div class="brand"><img class="icon" src="https://slack.com/favicon.ico">Slack</div><h3>Message sent</h3><p>Mike · dinner moved to Friday</p><div class="kv"><span>Channel</span><b>Slack</b></div><div class="kv"><span>Calendar</span><b>Updated</b></div><div class="actions"><button class="btn">Open chat</button><button class="btn primary">Done</button></div></div></div>
+  <div class="confirm drive"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.uber.com/favicon.ico">Uber</div><h3>Ride scheduled</h3><p>Airport · Friday · 7:42 AM</p><div class="kv"><span>Estimate</span><b>$38</b></div><div class="kv"><span>Buffer</span><b>58 min</b></div><div class="actions"><button class="btn">Change</button><button class="btn primary">Done</button></div></div></div>
+</div>
+<div class="section-title">Decision / approval</div>
+<div class="confirm-row">
+  <div class="confirm" style="--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72')"><div class="confirm-body"><div class="brand"><img class="icon" src="https://stripe.com/favicon.ico">Stripe</div><h3>Invoice ready</h3><p>Acme · $4,000 · draft saved</p><div class="kv"><span>Status</span><b>Ready to send</b></div><div class="kv"><span>Next</span><b>Follow-up queued</b></div><div class="actions"><button class="btn">Review</button><button class="btn primary">Send</button></div></div></div>
+  <div class="confirm shop"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.apple.com/favicon.ico">Apple</div><h3>Ready to purchase</h3><p>MacBook Air · $1,499</p><div class="kv"><span>Delivery</span><b>Thursday</b></div><div class="kv"><span>Payment</span><b>Needs confirmation</b></div><div class="actions"><button class="btn">Review</button><button class="btn primary">Checkout</button></div></div></div>
+  <div class="confirm" style="--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72')"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.paypal.com/favicon.ico">PayPal</div><h3>Refund ready</h3><p>Order #3812 · $84.22</p><div class="kv"><span>Destination</span><b>Original payment</b></div><div class="kv"><span>Impact</span><b>Irreversible</b></div><div class="actions"><button class="btn">Cancel</button><button class="btn primary">Refund</button></div></div></div>
+</div>
+</div>
+
+<div class="view" id="handoffs">
+<div class="section-title">Minimal handoffs</div>
+<div class="gallery">
+  <div class="glass bg-flight handoff"><div class="handoff-icon">↗</div><div><strong>Confirm payment</strong><span>Your flight is selected and checkout is filled in.</span></div><button class="btn primary">Open checkout</button></div>
+  <div class="glass bg-hotel handoff"><div class="handoff-icon">⌁</div><div><strong>Sign in to continue</strong><span>The hotel requires your account before booking.</span></div><button class="btn primary">Sign in</button></div>
+  <div class="glass bg-clinic handoff"><div class="handoff-icon">✓</div><div><strong>Review consent</strong><span>The clinic requires you to acknowledge intake terms.</span></div><button class="btn primary">Review</button></div>
+  <div class="glass bg-office handoff"><div class="handoff-icon">!</div><div><strong>Recipient ambiguous</strong><span>Two contacts match “Alex.” Pick one before I send it.</span></div><button class="btn primary">Choose</button></div>
+  <div class="glass bg-repair handoff"><div class="handoff-icon">☎</div><div><strong>Call required</strong><span>This shop only books same-day diagnostics by phone.</span></div><button class="btn primary">Open number</button></div>
+  <div class="glass bg-shop handoff"><div class="handoff-icon">×</div><div><strong>Checkout changed</strong><span>The listed price changed from $1,499 to $1,579.</span></div><button class="btn primary">Review</button></div>
+</div>
+<div class="section-title">Failures that stay useful</div>
+<div class="confirm-row">
+  <div class="confirm" style="--bg:url('https://images.unsplash.com/photo-1772475385509-93fd87a2d4ba?auto=format&fit=crop&w=2400&q=72')"><div class="confirm-body"><div class="brand"><img class="icon" src="https://slack.com/favicon.ico">Slack</div><h3>Message not sent</h3><p>Slack rejected the action</p><div class="kv"><span>Calendar</span><b>Still updated</b></div><div class="kv"><span>Safe retry</span><b>Yes</b></div><div class="actions"><button class="btn">Details</button><button class="btn primary">Retry</button></div></div></div>
+  <div class="confirm hotel"><div class="confirm-body"><div class="brand"><img class="icon" src="https://www.hyatt.com/favicon.ico">Hyatt</div><h3>Booking uncertain</h3><p>The confirmation page timed out</p><div class="kv"><span>Email receipt</span><b>Not found yet</b></div><div class="kv"><span>Retry</span><b>Blocked until verified</b></div><div class="actions"><button class="btn primary">Check status</button></div></div></div>
+</div>
+</div>
+
+<div class="view" id="settings">
+<div class="section-title">Behavior</div>
+<div class="gallery">
+  <div class="glass bg-office settings-shell">
+    <div class="settings-head"><div><h3>Life Agent</h3><span>How aggressively it handles the rest</span></div><div class="segment"><span>Ask</span><span class="on">Balanced</span><span>Do more</span></div></div>
+    <div class="setting-group">
+      <div class="setting"><div><strong>Handle follow-ups</strong><p>Create justified tasks, calendar changes, or messages after an outcome.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Avoid duplicate notifications</strong><p>Prefer provider notifications when they already cover the event.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Use browser fallback</strong><p>Continue through websites when no connected action exists.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+  </div>
+
+  <div class="glass bg-shop settings-shell">
+    <div class="settings-head"><div><h3>Approvals</h3><span>Consequential actions</span></div></div>
+    <div class="setting-group">
+      <div class="setting"><div><strong>Purchases</strong><p>Always require final confirmation unless explicitly authorized.</p></div><div class="segment"><span class="on">Ask</span><span>Allow</span></div></div>
+      <div class="setting"><div><strong>Messages</strong><p>Send routine messages when intent is clear.</p></div><div class="segment"><span>Ask</span><span class="on">Allow</span></div></div>
+      <div class="setting"><div><strong>Reservations</strong><p>Book when constraints are satisfied and no payment is required.</p></div><div class="segment"><span>Ask</span><span class="on">Allow</span></div></div>
+    </div>
+  </div>
+
+  <div class="glass bg-flight settings-shell">
+    <div class="settings-head"><div><h3>Visuals</h3><span>Glass UI behavior</span></div></div>
+    <div class="setting-group">
+      <div class="setting"><div><strong>Contextual backgrounds</strong><p>Use a relevant cached photo behind cards when available.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Brand icons</strong><p>Show provider or business marks when they improve recognition.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Density</strong><p>Keep cards compact and progressively disclose more options.</p></div><div class="segment"><span>Roomy</span><span class="on">Compact</span></div></div>
+    </div>
+  </div>
+
+  <div class="glass bg-office settings-shell">
+    <div class="settings-head"><div><h3>Memory</h3><span>User-owned durable context</span></div></div>
+    <div class="setting-group">
+      <div class="setting"><div><strong>Read Life State</strong><p>Use durable preferences only when relevant to the current outcome.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Learn defaults</strong><p>Save reusable preferences and unresolved commitments, not trivia.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Secrets</strong><p>Credentials, tokens, card data, and auth artifacts are never stored.</p></div><div class="segment"><span class="on">Blocked</span></div></div>
+    </div>
+  </div>
+
+  <div class="glass bg-office settings-shell full">
+    <div class="settings-head"><div><h3>Asset cache</h3><span>UI-only icon and background delivery</span></div><button class="btn">Clear stale</button></div>
+    <div class="cache-grid">
+      <div class="cache-stat"><b>42</b><span>Brand icons cached</span></div>
+      <div class="cache-stat"><b>12</b><span>Backgrounds cached</span></div>
+      <div class="cache-stat"><b>31 d</b><span>Fresh icon TTL</span></div>
+      <div class="cache-stat"><b>Stale OK</b><span>Fallback on origin failure</span></div>
+    </div>
+    <div class="setting-group">
+      <div class="setting"><div><strong>Dynamic brand lookup</strong><p>Cache first, fetch canonical public site second, initials/blank last.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Background catalog</strong><p>Serve curated cached images from the Life Agent asset origin.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting"><div><strong>Stale-if-error</strong><p>Keep serving a known cached asset when the remote origin refuses or fails.</p></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+function showView(id,button){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  button.classList.add('active');
+}
+function expandOptions(id,button){
+  const node=document.getElementById(id);
+  node.classList.toggle('expanded');
+  button.textContent=node.classList.contains('expanded')?'Less':'More';
+}
+</script>
+</body></html>
