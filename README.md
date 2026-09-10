@@ -27,15 +27,31 @@ The marketplace is `.agents/plugins/marketplace.json` and the plugin is under `p
 ```bash
 git clone https://github.com/tjXJNOOBIE/Life-Agent.git
 cd Life-Agent
-git switch working/chatgpt-plugin-v1
 npm test
 ```
 
 Open the repository in ChatGPT Desktop, choose **Plugins Directory**, add **Life Agent Dev**, and install **Life Agent**. Codex CLI can add the development marketplace with:
 
 ```bash
-codex plugin marketplace add tjXJNOOBIE/Life-Agent --ref working/chatgpt-plugin-v1
+codex plugin marketplace add tjXJNOOBIE/Life-Agent --ref main
 ```
+
+## Hosted MCP adapter
+
+The merged `main` tree also includes a dependency-free HTTP adapter for a
+Tavall-hosted deployment. Configure an endpoint-owned absolute
+`LIFE_AGENT_ASSET_CACHE_DIR`, then run:
+
+```bash
+LIFE_AGENT_ASSET_CACHE_DIR=/var/lib/life-agent/assets \
+LIFE_AGENT_PORT=3000 npm run serve:http
+```
+
+The adapter exposes `GET /healthz`, `POST /mcp`, and read-only
+`GET|HEAD /assets/<64-lowercase-hex-sha256>`. It wraps the same MCP server used
+by stdio and does not add provider credentials, arbitrary URL fetching, or
+provider mutation authority. A host supplies the Strands/model/provider loop
+and performs explicit HITL before consequential actions.
 
 ## MCP and security boundaries
 

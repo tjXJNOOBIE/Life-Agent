@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Life Agent architecture</title>
+  <desc id="desc">Outcome-first routing through a host, Life Agent MCP, safe UI and explicit human approval to connected providers, followed by verification.</desc>
+  <rect width="1200" height="420" fill="#0b1020"/>
+  <g font-family="Arial, sans-serif" font-size="18" fill="#f8fafc" text-anchor="middle">
+    <g stroke="#93c5fd" stroke-width="2" fill="#172554">
+      <rect x="30" y="155" width="150" height="80" rx="16"/><rect x="220" y="155" width="170" height="80" rx="16"/>
+      <rect x="430" y="155" width="170" height="80" rx="16"/><rect x="640" y="85" width="170" height="80" rx="16"/>
+      <rect x="640" y="225" width="170" height="80" rx="16"/><rect x="850" y="155" width="170" height="80" rx="16"/>
+      <rect x="1050" y="155" width="120" height="80" rx="16"/>
+    </g>
+    <text x="105" y="188">Human outcome</text><text x="105" y="213">intent</text>
+    <text x="305" y="188">Strands-capable</text><text x="305" y="213">host</text>
+    <text x="515" y="188">Life Agent MCP</text><text x="515" y="213">routing boundary</text>
+    <text x="725" y="118">MCP Apps UI</text><text x="725" y="143">choices / outcome</text>
+    <text x="725" y="258">Explicit HITL</text><text x="725" y="283">approval boundary</text>
+    <text x="935" y="188">Connected provider</text><text x="935" y="213">or host browser</text>
+    <text x="1110" y="188">Verify</text><text x="1110" y="213">result</text>
+    <g stroke="#fbbf24" stroke-width="3" fill="none" marker-end="url(#arrow)">
+      <path d="M180 195H220"/><path d="M390 195H430"/><path d="M600 195H640"/><path d="M810 125H850"/><path d="M810 265H850"/><path d="M1020 195H1050"/>
+    </g>
+  </g>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#fbbf24"/></marker></defs>
+</svg>

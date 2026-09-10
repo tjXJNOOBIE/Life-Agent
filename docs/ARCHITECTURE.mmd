@@ -1,0 +1,14 @@
+flowchart LR
+  Human[Human outcome] --> Host[Strands-capable host]
+  Host --> MCP[Life Agent MCP boundary]
+  MCP --> Route[Capability-first routing]
+  Route --> UI[MCP Apps UI surfaces]
+  Route --> HITL[Explicit choice and HITL boundary]
+  HITL --> Provider[Connected provider or host browser]
+  Provider --> Verify[Authoritative verification]
+  Verify --> Outcome[Outcome and commitments]
+  MCP --> State[LIFE.md safe user-owned state]
+  MCP --> Assets[Endpoint-owned bounded asset cache]
+  Auth[Provider auth and payment] -. host/provider owned .-> Provider
+  classDef boundary fill:#1f2937,stroke:#93c5fd,color:#fff;
+  class MCP,HITL,Assets boundary;
