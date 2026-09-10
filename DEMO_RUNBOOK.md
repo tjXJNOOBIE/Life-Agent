@@ -31,7 +31,7 @@ explicit human approval boundary. A non-loopback deployment must send
 `Authorization: Bearer $LIFE_AGENT_HTTP_AUTH_TOKEN`; `/healthz` remains public.
 
 The current Tavall-hosted acceptance service is `life-agent-hosted-demo` at
-merged commit `8b489a0691d56ca02448868a7d073b1b6e5dca52`, with loopback MCP at
+merged commit `0d1dce8d15d8d5cf7dbf1d58f0c64fce555b351d`, with loopback MCP at
 `http://127.0.0.1:3300/mcp`. Tavall start/restart, health, initialize, tool
 discovery, resource discovery, and execution-resource read were physically
 verified. This is a controlled host acceptance deployment, not a public judge
