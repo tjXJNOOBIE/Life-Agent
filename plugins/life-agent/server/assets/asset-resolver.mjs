@@ -78,17 +78,21 @@ function isPrivateAddress(address) {
   }
   if (family === 6) {
     const normalized = address.toLowerCase();
+    if (normalized.startsWith('::ffff:') && isPrivateAddress(normalized.slice(7))) return true;
     return normalized === '::' || normalized === '::1' || normalized.startsWith('fe80:') ||
-      normalized.startsWith('fc') || normalized.startsWith('fd') || normalized.startsWith('ff');
+      normalized.startsWith('fc') || normalized.startsWith('fd') || normalized.startsWith('fec') || normalized.startsWith('ff');
   }
   return true;
 }
 
-async function assertPublicUrl(url, lookup = dns.lookup) {
+async function assertPublicUrl(url, lookup = dns.lookup, allowedHosts = null) {
   const parsed = new URL(url);
   if (parsed.protocol !== 'https:') throw new Error('asset origins must use https');
   if (parsed.username || parsed.password) throw new Error('asset origins may not contain credentials');
   if (parsed.port && parsed.port !== '443') throw new Error('asset origins may only use port 443');
+  if (allowedHosts && ![...allowedHosts].some(host => parsed.hostname === host || parsed.hostname.endsWith(`.${host}`))) {
+    throw new Error('asset origin is outside the trusted domain');
+  }
   const addresses = await lookup(parsed.hostname, { all: true, verbatim: true });
   if (!addresses.length || addresses.some(entry => isPrivateAddress(entry.address))) {
     throw new Error('asset origin did not resolve to a public address');
@@ -118,10 +122,10 @@ async function readLimitedBody(response, maxBytes) {
   return Buffer.concat(chunks, size);
 }
 
-async function fetchPublic(fetchImpl, url, { maxBytes, acceptedTypes, lookup, maxRedirects = 4 }) {
+async function fetchPublic(fetchImpl, url, { maxBytes, acceptedTypes, lookup, maxRedirects = 4, allowedHosts = null }) {
   let current = new URL(url);
   for (let redirect = 0; redirect <= maxRedirects; redirect += 1) {
-    await assertPublicUrl(current, lookup);
+    await assertPublicUrl(current, lookup, allowedHosts);
     const response = await fetchImpl(current, {
       redirect: 'manual',
       headers: {
@@ -147,10 +151,10 @@ async function fetchPublic(fetchImpl, url, { maxBytes, acceptedTypes, lookup, ma
   throw new Error('too many redirects');
 }
 
-async function fetchPublicHtml(fetchImpl, url, { lookup, maxBytes = 256 * 1024, maxRedirects = 4 }) {
+async function fetchPublicHtml(fetchImpl, url, { lookup, maxBytes = 256 * 1024, maxRedirects = 4, allowedHosts = null }) {
   let current = new URL(url);
   for (let redirect = 0; redirect <= maxRedirects; redirect += 1) {
-    await assertPublicUrl(current, lookup);
+    await assertPublicUrl(current, lookup, allowedHosts);
     const response = await fetchImpl(current, {
       redirect: 'manual',
       headers: { accept: 'text/html', 'user-agent': 'Life-Agent-UI-Asset-Resolver/0.1' },
@@ -170,7 +174,8 @@ async function fetchPublicHtml(fetchImpl, url, { lookup, maxBytes = 256 * 1024, 
 }
 
 async function fetchHomepageIcon(fetchImpl, domain, { lookup, maxIconBytes }) {
-  const { html, finalUrl } = await fetchPublicHtml(fetchImpl, `https://${domain}/`, { lookup });
+  const allowedHosts = new Set([domain]);
+  const { html, finalUrl } = await fetchPublicHtml(fetchImpl, `https://${domain}/`, { lookup, allowedHosts });
   const tags = html.match(/<link\b[^>]*>/gi) || [];
   for (const tag of tags) {
     const rel = tag.match(/\brel=["']([^"']+)["']/i)?.[1] || '';
@@ -179,7 +184,12 @@ async function fetchHomepageIcon(fetchImpl, domain, { lookup, maxIconBytes }) {
     if (!href || href.startsWith('data:')) continue;
     const candidate = new URL(href, finalUrl);
     try {
-      return await fetchPublic(fetchImpl, candidate, { maxBytes: maxIconBytes, acceptedTypes: ICON_TYPES, lookup });
+      return await fetchPublic(fetchImpl, candidate, {
+        maxBytes: maxIconBytes,
+        acceptedTypes: ICON_TYPES,
+        lookup,
+        allowedHosts,
+      });
     } catch {
       // Try the next icon declaration.
     }
@@ -250,6 +260,7 @@ export class AssetResolver {
           maxBytes: this.maxIconBytes,
           acceptedTypes: ICON_TYPES,
           lookup: this.lookup,
+          allowedHosts: new Set([canonicalHost]),
         });
       } catch {
         fetched = await fetchHomepageIcon(this.fetchImpl, canonicalHost, { lookup: this.lookup, maxIconBytes: this.maxIconBytes });
@@ -291,6 +302,7 @@ export class AssetResolver {
         maxBytes: this.maxBackgroundBytes,
         acceptedTypes: BACKGROUND_TYPES,
         lookup: this.lookup,
+        allowedHosts: new Set([new URL(sourceUrl).hostname]),
       });
       const written = this.cache.write({
         key,

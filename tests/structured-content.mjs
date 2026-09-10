@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { assertAllowedKeys, validateStructuredContent } from '../plugins/life-agent/server/security/structured-content.mjs';
+
+const safe = validateStructuredContent({ nested: { value: 'ok' }, values: [1, true, null] });
+assert.equal(Object.getPrototypeOf(safe), null);
+assert.equal(Object.getPrototypeOf(safe.nested), null);
+assert.equal(safe.nested.value, 'ok');
+assert.throws(() => validateStructuredContent({ access_token: 'secret' }), /forbidden/);
+assert.throws(() => validateStructuredContent({ refreshToken: 'secret' }), /forbidden/);
+assert.throws(() => validateStructuredContent({ id_token: 'secret' }), /forbidden/);
+assert.throws(() => validateStructuredContent({ sessionToken: 'secret' }), /forbidden/);
+assert.throws(() => validateStructuredContent({ raw_headers: 'secret' }), /forbidden/);
+assert.throws(() => validateStructuredContent(JSON.parse('{"__proto__":{"polluted":true}}')), /forbidden/);
+assert.throws(() => validateStructuredContent(JSON.parse('{"constructor":{"polluted":true}}')), /forbidden/);
+assert.throws(() => validateStructuredContent({ value: 'x'.repeat(8_193) }), /oversized string/);
+assert.throws(() => validateStructuredContent({ value: Array.from({ length: 101 }, () => 1) }), /oversized array/);
+assert.throws(() => validateStructuredContent({ value: Number.NaN }), /non-finite/);
+let deep = 'leaf';
+for (let index = 0; index < 12; index += 1) deep = { next: deep };
+assert.throws(() => validateStructuredContent(deep), /maximum depth/);
+assertAllowedKeys({ title: 'ok' }, ['title']);
+assert.throws(() => assertAllowedKeys({ url: 'https://example.test' }, ['title'], 'asset'), /unsupported field/);
+console.log('Life Agent structured-content security tests passed.');

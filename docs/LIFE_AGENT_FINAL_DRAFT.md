@@ -1,153 +1,88 @@
 # Life Agent Final Draft
 
-> **Status:** Working design  
-> **Owns:** Life Agent product behavior, orchestration boundaries, durable-state principles, and host/provider integration model.  
-> **Does not own:** Provider authentication, provider business data, payment credentials, calendars, inboxes, task schedulers, browser sessions, or third-party service behavior.
+> **Status:** Working design contract for v0.1
+> **Owns:** Outcome orchestration, capability routing, commitment handling, verification, safe UI, task-scoped browser boundaries, and user-state principles.
+> **Does not own:** Provider authentication or records, payment credentials, calendars, inboxes, browser profiles, third-party sessions, or a private scheduler.
 
 ## About
 
-Life Agent is a portable orchestration plugin for general-purpose AI hosts. A user states a desired outcome in ordinary language; Life Agent interprets that outcome, discovers the capabilities already available in the host, executes as far as permissions allow, verifies the result, and handles the follow-up work that the result creates.
+Life Agent turns an ordinary-language outcome into coordinated work. The user states what should become true; Life Agent discovers the capabilities already available in the host, selects providers only after capability resolution, acts as far as authorized, verifies reality, and handles the consequences.
 
-The primary interaction rule is:
-
-> **The user expresses the outcome. Life Agent discovers the means.**
-
-Life Agent is intentionally not a standalone SaaS application. It should exploit the host's browser, connected apps, plugins, MCP servers, files, tasks, and native UI rather than reimplementing them.
-
-## Ownership Rules
-
-Life Agent owns:
-
-- natural-language outcome interpretation;
-- capability-first provider routing;
-- multi-provider orchestration;
-- continuation semantics such as "do it";
-- verification strategy;
-- consequence/follow-up expansion;
-- selective durable operational memory;
-- orchestration UI for status, generic choices, and capability routes.
-
-Connected providers own authentication/authorization, source-of-truth records, communications delivery, calendar state, payment processing/credentials, bookings/reservations, CRM/project/file data, and provider-specific confirmation or safety requirements.
-
-The host owns browser/computer use, web search, scheduled tasks/automation, plugin/app connection flows, approval UX/permission enforcement, and native rich UI surfaces when available.
-
-## System Rules and Behavior
-
-### Universal execution
-
-Every actionable request follows the same conceptual loop:
+The core loop is:
 
 ```text
-Interpret -> Resolve -> Act -> Hand off if required -> Verify -> Propagate -> Persist selectively
+Interpret -> Resolve capability -> Select provider -> Act -> Handoff if required
+-> Verify -> Repair/propagate consequences -> Persist only durable state
 ```
 
-Steps may be skipped when the request is simple. The loop is a reasoning contract, not user-visible ceremony.
+## Ownership rules
 
-### Capability-first routing
+Life Agent owns interpretation, capability-first/provider-second routing, multi-provider orchestration, continuation semantics, verification strategy, consequence expansion, and orchestration UI.
 
-Life Agent resolves the capability required before choosing a provider. Provider choice depends on what the current host exposes and what the user has connected. The user should not need to name Gmail, Calendar, Stripe, Slack, or any other integration when the route can be discovered.
+The host and connected providers own authentication, authorization enforcement, browser/computer use, app connections, payment confirmation, provider records, scheduled tasks, and native rich UI. Life Agent never receives a password or MFA secret and never stores reusable website or identity-provider session material.
+
+## Product behavior
+
+### Outcome-first routing
+
+The user should be able to say “Book a flight to Seattle.” Life Agent first resolves travel search, booking, calendar, communication, and transport capabilities, then chooses among currently available providers. Provider names are implementation details unless a choice is consequential.
+
+### Commitment Surface
+
+After a choice, the selected item becomes compact context. The primary surface shows the consequences it creates, inline conflict repair, only the remaining micro-decisions, and the smallest approval boundary. It does not turn every fare, seat, bag, or conflict into a separate giant page.
+
+### Verification and retry
+
+A provider call is not proof of completion. Every consequential mutation must be checked against authoritative provider state. If a mutation fails ambiguously, Life Agent verifies whether it already applied before deciding whether retry is safe. Materially changed price, route, target, recipient, terms, or financial impact returns to the user.
 
 ### Browser fallback
 
-The host browser/computer-use system is the universal fallback for services without a suitable connector. Life Agent may navigate, fill forms, and prepare a transaction or reservation to the point allowed by the host/provider. Authentication, payment confirmation, or another protected action can be handed to the user at the narrowest possible boundary.
+Browser capability is task-scoped and outcome-specific. It is used only when no suitable connected capability exists. Life Agent may prepare work to the provider boundary, then hand off authentication, payment, MFA, password-only login, or legally required consent to the user.
 
-### Verification
+## UI contract
 
-A mutation is not complete merely because a tool call was attempted. Life Agent verifies using the best available authoritative evidence, such as provider state, browser confirmation, email receipt, calendar event, payment status, or resulting record.
+The production resources and matching tools are:
 
-### Consequence expansion
+| Surface | Resource URI | Tool |
+| --- | --- | --- |
+| Choice | `ui://life-agent/choices-v2.html` | `life_show_choices` |
+| Commitment | `ui://life-agent/commitment-v2.html` | `life_show_commitment` |
+| Handoff | `ui://life-agent/handoff-v2.html` | `life_show_handoff` |
+| Live Execution | `ui://life-agent/execution-v2.html` | `life_show_execution` |
+| Outcome | `ui://life-agent/outcome-v2.html` | `life_show_outcome` |
+| Settings | `ui://life-agent/settings-v2.html` | `life_show_settings` |
+| Capability Route | `ui://life-agent/capability-route-v2.html` | `life_show_capability_route` |
 
-After a verified state change, Life Agent determines what new obligations were created and handles or schedules justified follow-ups. It must not generate artificial productivity work merely because a workflow could theoretically have more steps.
+The accepted visual contract is the dark contextual Glass UI System. Shared CSS preserves the Apple system font stack, compact density, dark translucent glass, restrained borders, 22px outer material radius, 16px option cards, compact 3-up choices, provider marks, and progressive disclosure.
 
-### Communication
+MCP Apps view behavior uses `2026-01-26`: widgets handle `ui/initialize`, host model-context updates, `ui/update-model-context` for small decisions, `ui/message` for explicit continuation CTAs, sizing, and teardown. They render server-sanitized `toolOutput` only. Production CSP disables network connections, storage, cookies, arbitrary forms, base tags, and third-party rendering.
 
-Life Agent may send or prepare email/messages using connected channels when communication is part of the intended outcome or a necessary consequence. It should infer the appropriate channel from context and avoid duplicate notifications.
+## Storage and privacy
 
-### Payments
-
-Life Agent never stores card credentials and does not become a payment processor. It routes through provider payment capabilities or merchant/browser checkout and respects the host/provider confirmation boundary.
-
-### Future work
-
-Life Agent uses host scheduled tasks/automations for future checks, reminders, recurring work, and condition monitoring. It does not maintain its own scheduler.
-
-## Technical Structure
-
-The initial package contains:
+`LIFE.md` is user-owned and durable. It may contain preferences, standing permissions, relationship/channel mappings, continuation context, unresolved commitments, learned defaults, and safe `ExternalIdentityLink` metadata:
 
 ```text
-plugins/life-agent/
-├── .codex-plugin/plugin.json
-├── .mcp.json
-├── server/server.mjs
-├── skills/life-agent/
-└── templates/LIFE.md
+provider, stableProviderSubject, displayName, emailHint, linkedAt
 ```
 
-The skill is the primary product behavior. The bundled MCP server is deliberately narrow: it provides Life Agent orchestration UI and durable `LIFE.md` read/write tools. It does not proxy provider APIs.
+It must not contain tokens, cookies, passwords, MFA or recovery secrets, browser profiles, reusable sessions, card data, or private keys.
 
-## Data Model and Storage
+The UI asset cache is not plugin state. The hosted MCP endpoint owns cache bytes, SHA-shaped keys, TTLs, negative entries, stale-if-error behavior, bounded retrieval, and cleanup. A configured absolute `LIFE_AGENT_ASSET_CACHE_DIR` must not overlap `PLUGIN_DATA` as a child, parent, or equal path. Local stdio uses an ephemeral process-scoped directory when no endpoint cache is configured. The read-only route is `/assets/<cache-key>`; arbitrary URL proxying and user/model cache administration do not exist.
 
-Durable Life Agent memory is a user-owned Markdown file named `LIFE.md` in the host-provided writable plugin data directory.
+## Authentication lifecycle
 
-It may contain only reusable preferences, standing permissions, person/channel mappings, active continuation context, unresolved commitments, and learned defaults. It must not contain secrets, credentials, authentication artifacts, payment credentials, or transient browsing data.
+An isolated temporary browser runtime is created for each root task. An `AuthLease` is bound to the root task, runtime, HTTPS origin, identity provider, and expiry, with states `AUTH_REQUIRED`, `AUTHENTICATING`, `AUTHENTICATED`, `EXPIRED`, and `DESTROYED`. Runtime teardown destroys leases and actual browser resources on success, cancel, timeout, and failure.
 
-External providers remain authoritative for their own records.
+The guarantee is precise: **Life Agent retains no reusable website or identity-provider session material after the task completes.** This does not claim that a third-party server-side session was terminated.
 
-## Runtime Flows
+`BrowserApprovalPolicy` separates authentication from authorization. It requires user involvement for identity linking, OAuth scope changes, passwords, MFA, recovery, core security, material legal terms, payment method changes, changed purchase amounts, targets, recipients, routes, prices, and terms.
 
-### Generic success flow
+## MCP protocol
 
-```text
-one-sentence request
--> interpret desired outcome
--> inspect capabilities
--> select provider route
--> execute connected actions/browser work
--> pause only at required user boundary
--> verify completion
--> perform/schedule resulting commitments
--> update durable Life State only if warranted
--> render completion receipt when useful
-```
+The stdio server supports legacy `2025-11-25` and current `2026-07-28`. Current clients may call `server/discover`. Current list/resource results include `resultType`, `ttlMs`, and `cacheScope`; consequential tool calls return `ttlMs: 0` and `cacheScope: none`. Legacy clients receive the ordinary MCP result shapes. The `life_asset_resolve` tool remains bounded and read-only; shared cache status/clear operations are operator infrastructure, not user/model tools.
 
-### Provider failure
+## Validation
 
-```text
-provider action fails
--> inspect whether action may have partially completed
--> verify authoritative state
--> select safe alternate provider/browser route when available
--> otherwise expose the narrow blocker
-```
+The local suite exercises actual server subprocess behavior, not only imports. It validates manifests, all seven resources/tools, commitment and outcome models, sanitized output, modern and legacy protocol paths, UI lifecycle strings, auth lease transitions, browser teardown on terminal paths, safe identity links, SSO priority and password handoff, deterministic approval, verify-before-retry decisions, redirect/IP/domain/MIME/size asset safety, negative cache, stale-if-error, asset routes, cache/user-state separation, payload bounds, prototype-pollution rejection, and cache-admin absence.
 
-Retries must not duplicate consequential actions when prior completion is uncertain.
-
-## Integrations
-
-The current provider catalog is owned by `plugins/life-agent/skills/life-agent/references/CAPABILITY_STACK.md`. The catalog is intentionally replaceable: capability semantics are stable while provider availability varies by host and installation.
-
-## Validation Requirements
-
-Before v0.1 is considered verified:
-
-- plugin manifest and marketplace JSON parse cleanly;
-- bundled MCP server passes initialization, tool listing, state read/write, UI resource read, and render-tool smoke tests;
-- local ChatGPT Desktop installation succeeds;
-- all three Life Agent UI resources render in the host;
-- at least one cross-provider flow is exercised end-to-end using real connected services;
-- browser fallback is exercised without Life Agent receiving user credentials;
-- durable state survives plugin runs without writing secrets;
-- no provider operation is falsely reported as completed without verification.
-
-## Final Rules Summary
-
-- One sentence must be enough to start an actionable flow.
-- The user states outcomes, not connector choreography.
-- Resolve capabilities before providers.
-- Use existing host/provider auth, storage, browser, task, and payment systems.
-- Hand the user only genuinely non-delegable steps.
-- Verify mutations before declaring success.
-- Handle consequences after verified state changes.
-- Keep durable memory small, explicit, user-owned, and secret-free.
-- Keep the Life Agent MCP server a UI/state shim, not a shadow backend.
+Real Google/Microsoft/GitHub/Discord authentication ceremonies, provider-side mutations, third-party server-session termination, and host-specific ChatGPT installation remain manual/provider boundaries and are not represented as completed by local tests.

@@ -95,9 +95,25 @@ Use Life Agent UI tools as orchestration surfaces:
 
 - `life_show_execution` for multi-step status, required handoffs, and completion receipts;
 - `life_show_choices` for a small comparable option set only when a richer native host UI is unavailable;
+- `life_show_commitment` for the selected item, consequences, inline conflict repair, micro-decisions, and the smallest remaining approval boundary;
+- `life_show_handoff` for the narrow user-assisted provider step;
+- `life_show_outcome` for the compact verified receipt and justified follow-ups;
+- `life_show_settings` for preferences, standing permissions, and safe identity metadata;
 - `life_show_capability_route` for development, trust/debugging, or when the user asks how Life Agent chose its providers.
 
-The UI tools do not perform the underlying action. Perform actions through the real host/provider tools, then render their state.
+The production resources are versioned `ui://life-agent/choices-v2.html`, `commitment-v2.html`, `handoff-v2.html`, `execution-v2.html`, `outcome-v2.html`, `settings-v2.html`, and `capability-route-v2.html`. They use the MCP Apps view contract `2026-01-26`, render server-sanitized tool output only, and use `ui/update-model-context` for small decisions plus `ui/message` for explicit continuation CTAs. They do not perform the underlying provider action. Perform actions through the real host/provider tools, then render their state.
+
+The accepted visual contract is the dark contextual Glass UI System: Apple system fonts, compact dense cards, modest blur, restrained borders, compact 3-up choices, small provider marks, progressive disclosure, and one primary action. Do not replace it with a generic SaaS dashboard or a giant detail page.
+
+## Browser authentication and approval
+
+Browser fallback is task-scoped and outcome-specific. An isolated temporary runtime owns an `AuthLease` for one root task, browser runtime, HTTPS origin, identity provider, and expiry. Destroy the lease and actual browser resources on success, cancel, timeout, and failure. Identity metadata may persist only as provider, stable provider subject, display name, email hint, and link time; passwords, MFA, cookies, tokens, browser profiles, and reusable sessions never persist. Password-only sites remain user-assisted handoffs.
+
+Authentication is not authorization. Apply deterministic `BrowserApprovalPolicy` for identity linking, OAuth scope changes, passwords, MFA, recovery, security settings, material legal/financial changes, changed purchase amounts, targets, recipients, routes, prices, or terms. For an ambiguous consequential mutation, verify provider state before retrying.
+
+## Asset boundary
+
+`LIFE.md` owns user operating state. The hosted MCP endpoint owns UI asset bytes, keys, TTLs, negative caching, stale-if-error behavior, bounded retrieval, and cleanup. `LIFE_AGENT_ASSET_CACHE_DIR` must be absolute and disjoint from `PLUGIN_DATA` in either direction; local stdio uses an ephemeral process cache. `life_asset_resolve` accepts only trusted brand/theme identities and never exposes arbitrary URL/domain targets. Shared cache status/clear operations are not ordinary Life Agent tools. Hosted assets are read only through `/assets/<cache-key>`.
 
 ## Failure behavior
 

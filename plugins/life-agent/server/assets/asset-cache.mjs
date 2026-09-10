@@ -15,9 +15,11 @@ function atomicWrite(file, content) {
 export class AssetCache {
   constructor({ rootDir, now = () => Date.now() }) {
     if (!rootDir) throw new Error('rootDir is required');
-    this.rootDir = rootDir;
+    if (!path.isAbsolute(rootDir)) throw new Error('rootDir must be an absolute path');
+    this.rootDir = path.resolve(rootDir);
     this.now = now;
-    fs.mkdirSync(this.rootDir, { recursive: true });
+    fs.mkdirSync(this.rootDir, { recursive: true, mode: 0o700 });
+    if (!fs.statSync(this.rootDir).isDirectory()) throw new Error('rootDir must be a directory');
   }
 
   key(scope, identity) {
