@@ -1,0 +1,28 @@
+{
+  "name": "life-agent",
+  "version": "0.1.0",
+  "description": "Turn short natural-language outcomes into coordinated real-world actions across the host's available tools and connected services.",
+  "repository": "https://github.com/tjXJNOOBIE/Life-Agent",
+  "keywords": [
+    "orchestration",
+    "productivity",
+    "automation",
+    "personal-agent",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Life Agent",
+    "shortDescription": "Ask for the outcome. Life Agent handles the steps.",
+    "longDescription": "Life Agent interprets an outcome, discovers the capabilities already available in the host, executes as far as permissions allow, verifies the result, and handles the follow-up work that result creates.",
+    "developerName": "TJ",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": [
+      "Handle everything I need to do before my trip next week.",
+      "Move dinner with Mike to Friday and tell him.",
+      "Invoice Acme for the website and track the follow-up."
+    ]
+  }
+}
