@@ -2,7 +2,7 @@
 
 **Ask for the outcome. Life Agent handles the steps.**
 
-Life Agent is a portable outcome-first orchestration plugin. It resolves the capability needed for a request before selecting an available provider, performs authorized work, verifies consequential mutations, and handles the commitments created by the result.
+Life Agent is a portable outcome-first orchestration product. The Java runtime owns task state, policy, approvals, provider boundaries, MCP publication, and deterministic verification. The standalone Strands bridge owns model reasoning; the browser/UI TypeScript under `plugins/life-agent/` remains frontend and migration-reference material.
 
 Life Agent does not become an account system, payment vault, calendar, inbox, CRM, scheduler, browser-profile store, or provider proxy. Connected providers own their data and authentication; the host owns browser/computer use, app connections, approvals, and native UI.
 
@@ -29,6 +29,34 @@ git clone https://github.com/tjXJNOOBIE/Life-Agent.git
 cd Life-Agent
 npm test
 ```
+
+Build and install the Java product before connecting an AI client:
+
+```bash
+gradle --no-daemon clean check installDist
+./build/install/life-agent/bin/life-agent doctor
+```
+
+The Java MCP surfaces are:
+
+```bash
+# stdio, suitable for a local connector
+./build/install/life-agent/bin/life-agent
+
+# Streamable HTTP, defaulting to http://127.0.0.1:3300/mcp
+./build/install/life-agent/bin/life-agent serve
+```
+
+Set `LIFE_AGENT_TASK_STATE_DIR` to an absolute, user-owned directory when a
+non-default task-state location is needed. Set
+`LIFE_AGENT_STRANDS_NODE` and `LIFE_AGENT_STRANDS_ENTRYPOINT` to enable the
+Java `reason` command. The Strands child receives only `HOME`, `PATH`, and
+`TMPDIR`; provider credentials remain behind provider boundaries.
+
+`life_plan`, `life_task_status`, `life_request_action`, and
+`life_provider_capabilities` are the model-facing Java tools. Approval and
+execution are trusted Java operations and are not present in the model
+Function Catalog view. Payments always require explicit human approval.
 
 Open the repository in ChatGPT Desktop, choose **Plugins Directory**, add **Life Agent Dev**, and install **Life Agent**. Codex CLI can add the development marketplace with:
 
@@ -86,4 +114,16 @@ npm test
 
 It covers the subprocess MCP smoke path, both protocol eras, MCP Apps lifecycle messages, all seven UI surfaces, exact resource/tool counts, sanitizer limits, auth/approval/retry safety, asset redirects/IP/MIME/size safety, negative and stale-if-error cache behavior, endpoint/user-state separation, `/assets/<key>`, and manifest-compatible behavior.
 
-Live third-party authentication ceremonies and real provider mutations remain host/provider acceptance boundaries; they are not claimed by the local test suite.
+The Java product gate additionally runs the canonical Tavall architecture test,
+task/approval/browser-lifecycle tests, packaged launcher validation, and the
+required process-level Java -> standalone Strands -> Java MCP round trip:
+
+```bash
+gradle --no-daemon clean check installDist
+STRANDS_BRIDGE_INTEGRATION_NODE="$(command -v node)" \
+STRANDS_BRIDGE_INTEGRATION_ENTRYPOINT=/absolute/path/to/strands-bridge/dist/mcp/main.js \
+  gradle --no-daemon test --tests '*LifeStrandsBridgeRoundTripIntegrationTest' \
+  -Dstrands.bridge.integration.required=true
+```
+
+Live third-party authentication ceremonies and real provider mutations remain host/provider acceptance boundaries; they are not claimed by the local test suite. The legacy Node MCP server remains available for the checked-in UI/App compatibility tests while its surfaces are ported to the Java MCP contract; it is not used as the Java product authority.
