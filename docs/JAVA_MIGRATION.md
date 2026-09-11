@@ -44,12 +44,18 @@ export LIFE_AGENT_STRANDS_ENTRYPOINT=/absolute/path/to/strands-bridge/dist/mcp/m
 The Java launcher supplies an explicit child-process environment allowlist.
 Production credentials are not inherited by the model subprocess.
 
-## Legacy UI migration boundary
+## Java MCP App surface and legacy UI migration boundary
+
+The Java MCP publishes these seven read-only resources and matching render
+functions: choices, commitment, handoff, execution, outcome, settings, and
+capability-route. Their HTML is sanitized and mutation-free; the checked-in
+TypeScript UI remains the visual compatibility fixture while the richer Glass
+presentation is reconciled into the Java resource implementation.
 
 The TypeScript server under `plugins/life-agent/server/` remains checked in for
-the MCP Apps/browser compatibility suite while its seven UI resources and
-asset-serving behavior are ported to the Java MCP resource surface. It is not
-the owner of task policy, approval, provider effects, or durable task state.
+the MCP Apps/browser compatibility suite and endpoint-owned asset behavior. It
+is not the owner of task policy, approval, provider effects, or durable task
+state.
 
 Production mutation recording follows the product-wide rule: **production
 mutation -> recorded**. Local, development, and sandbox provider tests use

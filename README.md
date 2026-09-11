@@ -56,7 +56,9 @@ Java `reason` command. The Strands child receives only `HOME`, `PATH`, and
 `life_plan`, `life_task_status`, `life_request_action`, and
 `life_provider_capabilities` are the model-facing Java tools. Approval and
 execution are trusted Java operations and are not present in the model
-Function Catalog view. Payments always require explicit human approval.
+Function Catalog view. Payments always require explicit human approval. The
+Java MCP also publishes the seven read-only MCP App resources and matching
+`life_show_*` render tools; they cannot perform provider mutations.
 
 Open the repository in ChatGPT Desktop, choose **Plugins Directory**, add **Life Agent Dev**, and install **Life Agent**. Codex CLI can add the development marketplace with:
 

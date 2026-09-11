@@ -21,6 +21,7 @@ public final class LifeMcpRuntime implements AutoCloseable {
                 new com.fasterxml.jackson.databind.ObjectMapper().findAndRegisterModules()
         );
         catalog.registerInstances(functions);
+        catalog.registerInstances(new LifeMcpUiFunctions());
         int port = parsePort(environment.get("LIFE_AGENT_PORT"), 3300);
         AIFunctionMcpStandaloneHttpServer.Configuration configuration = new AIFunctionMcpStandaloneHttpServer.Configuration(
                 environment.getOrDefault("LIFE_AGENT_HOST", "127.0.0.1"),
@@ -31,7 +32,9 @@ public final class LifeMcpRuntime implements AutoCloseable {
                 "0.2.0",
                 "Java-owned Life Agent planning and approval-boundary MCP. Provider credentials, browser sessions, and payment confirmation remain outside the model view."
         );
-        return new LifeMcpRuntime(AIFunctionMcpStandaloneHttpServer.start(catalog, configuration));
+        return new LifeMcpRuntime(AIFunctionMcpStandaloneHttpServer.start(
+                catalog, configuration, LifeMcpUiSurface.resources(), java.util.List.of()
+        ));
     }
 
     public int port() {

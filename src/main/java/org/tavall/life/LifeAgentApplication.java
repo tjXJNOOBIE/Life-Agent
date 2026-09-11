@@ -54,10 +54,13 @@ public final class LifeAgentApplication {
         com.fasterxml.jackson.databind.ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
         org.tavall.ai.core.catalog.AIFunctionCatalog catalog = new org.tavall.ai.core.catalog.AIFunctionCatalog(objectMapper);
         catalog.registerInstances(new org.tavall.life.mcp.LifeAgentFunctions(store));
+        catalog.registerInstances(new org.tavall.life.mcp.LifeMcpUiFunctions());
         AIFunctionMcpStandaloneStdioServer.Configuration configuration = new AIFunctionMcpStandaloneStdioServer.Configuration(
                 "life-agent", "0.2.0", "Java-owned Life Agent MCP planning surface."
         );
-        try (AIFunctionMcpStandaloneStdioServer server = AIFunctionMcpStandaloneStdioServer.start(catalog, configuration)) {
+        try (AIFunctionMcpStandaloneStdioServer server = AIFunctionMcpStandaloneStdioServer.start(
+                catalog, configuration, org.tavall.life.mcp.LifeMcpUiSurface.resources(), List.of(), Map.of()
+        )) {
             server.awaitTermination();
         }
     }
