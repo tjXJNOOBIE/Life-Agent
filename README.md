@@ -2,7 +2,7 @@
 
 **Ask for the outcome. Life Agent handles the steps.**
 
-Life Agent is a portable outcome-first orchestration plugin. It resolves the capability needed for a request before selecting an available provider, performs authorized work, verifies consequential mutations, and handles the commitments created by the result.
+Life Agent is a portable outcome-first orchestration product. The Java runtime owns task state, policy, approvals, provider boundaries, MCP publication, and deterministic verification. The standalone Strands bridge owns model reasoning; the browser/UI TypeScript under `plugins/life-agent/` remains frontend and migration-reference material.
 
 Life Agent does not become an account system, payment vault, calendar, inbox, CRM, scheduler, browser-profile store, or provider proxy. Connected providers own their data and authentication; the host owns browser/computer use, app connections, approvals, and native UI.
 
@@ -20,6 +20,23 @@ The dependency-free MCP server exposes seven production UI resources and matchin
 
 The accepted visual language is the dark Apple-like contextual Glass UI System: compact dense layouts, restrained blurred glass, recognizable provider marks, 22px outer materials, 16px option cards, progressive disclosure, and one obvious primary action. The checked-in reference fixture `fixtures/life-agent-glass-ui-system.html` is locked at 37,404 bytes with SHA-256 `f497d59d4cb86493009dc9412bbe60dfde313d0516e8b1cbbf47228967e6b7f5`. UI resources are versioned as `ui://life-agent/*-v2.html` and speak the MCP Apps view contract `2026-01-26`.
 
+## npm distribution
+
+The public product package is a thin launcher around the Java distribution. It
+verifies the bundled runtime manifest and resolves the pinned standalone
+Strands bridge without making the legacy TypeScript server authoritative.
+
+```bash
+npm install life-agent
+npx life-agent doctor
+npx life-agent
+npx life-agent serve
+```
+
+The package is prepared for public npm publication. Current clean-consumer
+evidence uses the versioned tarball produced by `npm pack` because the registry
+does not currently contain this package.
+
 ## Install for local ChatGPT Desktop testing
 
 The marketplace is `.agents/plugins/marketplace.json` and the plugin is under `plugins/life-agent/`.
@@ -29,6 +46,39 @@ git clone https://github.com/tjXJNOOBIE/Life-Agent.git
 cd Life-Agent
 npm test
 ```
+
+Build and install the Java product before connecting an AI client:
+
+```bash
+gradle --no-daemon clean check installDist
+./build/install/life-agent/bin/life-agent doctor
+```
+
+The Java MCP surfaces are:
+
+```bash
+# stdio, suitable for a local connector
+./build/install/life-agent/bin/life-agent
+
+# Streamable HTTP, defaulting to http://127.0.0.1:3300/mcp
+./build/install/life-agent/bin/life-agent serve
+```
+
+Set `LIFE_AGENT_TASK_STATE_DIR` to an absolute, user-owned directory when a
+non-default task-state location is needed. Set
+`LIFE_AGENT_STRANDS_NODE` and `LIFE_AGENT_STRANDS_ENTRYPOINT` to enable the
+Java `reason` command. The Strands child receives only `HOME`, `PATH`, and
+`TMPDIR`; provider credentials remain behind provider boundaries.
+
+`life_plan`, `life_task_status`, `life_request_action`, and
+`life_provider_capabilities` are the model-facing Java tools. Approval and
+execution are trusted Java operations and are not present in the model
+Function Catalog view. Payments always require explicit human approval. The
+Java MCP also publishes the seven read-only MCP App resources and matching
+`life_show_*` render tools; they cannot perform provider mutations. The Java
+distribution carries the checked-in Glass master as a resource and removes
+external image URLs before serving it, so installed MCP App reads do not depend
+on arbitrary third-party fetches.
 
 Open the repository in ChatGPT Desktop, choose **Plugins Directory**, add **Life Agent Dev**, and install **Life Agent**. Codex CLI can add the development marketplace with:
 
@@ -86,4 +136,23 @@ npm test
 
 It covers the subprocess MCP smoke path, both protocol eras, MCP Apps lifecycle messages, all seven UI surfaces, exact resource/tool counts, sanitizer limits, auth/approval/retry safety, asset redirects/IP/MIME/size safety, negative and stale-if-error cache behavior, endpoint/user-state separation, `/assets/<key>`, and manifest-compatible behavior.
 
-Live third-party authentication ceremonies and real provider mutations remain host/provider acceptance boundaries; they are not claimed by the local test suite.
+The Java product gate additionally runs the canonical Tavall architecture test,
+task/approval/browser-lifecycle tests, packaged launcher validation, and the
+required process-level Java -> standalone Strands -> Java MCP round trip:
+
+```bash
+gradle --no-daemon clean check installDist
+STRANDS_BRIDGE_INTEGRATION_NODE="$(command -v node)" \
+STRANDS_BRIDGE_INTEGRATION_ENTRYPOINT=/absolute/path/to/strands-bridge/dist/mcp/main.js \
+  gradle --no-daemon test --tests '*LifeStrandsBridgeRoundTripIntegrationTest' \
+  -Dstrands.bridge.integration.required=true
+```
+
+Live third-party authentication ceremonies and real provider mutations remain host/provider acceptance boundaries; they are not claimed by the local test suite. The legacy Node MCP server remains available for the checked-in UI/App compatibility tests while its surfaces are ported to the Java MCP contract; it is not used as the Java product authority.
+On 2026-09-12, the committed Java package was exercised against connected
+Google Calendar and Gmail test-provider boundaries. A private disposable event
+and an unsent self-addressed draft were created and re-read, while Java kept
+both actions at WAITING_FOR_HUMAN; the temporary records were removed after
+capture. The SANDBOX-REAL clip and exact verification are listed in
+docs/evidence/VIDEO_EVIDENCE_MANIFEST.json. SSO, travel search, booking,
+payment, and public ChatGPT-host acceptance remain unclaimed.

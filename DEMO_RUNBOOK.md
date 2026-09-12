@@ -1,19 +1,20 @@
 # Life Agent demo runbook
 
-## Local protocol demo
+## Packaged Java protocol demo
 
 ```bash
-git clone https://github.com/tjXJNOOBIE/Life-Agent.git
-cd Life-Agent
-npm test
-PLUGIN_DATA="$(mktemp -d)" node plugins/life-agent/server/server.mjs
+npm install life-agent
+npx life-agent doctor
+npx life-agent serve
 ```
 
-Use an MCP client over stdio. Initialize once with either `2025-11-25` or
-`2026-07-28`, list tools/resources, read one UI resource, then call
-`life_show_choices`, `life_show_commitment`, and `life_show_outcome` with
-server-sanitized representative data. This validates the UI/protocol boundary;
-it is not a provider booking.
+Use an MCP client over stdio or HTTP. Initialize, list tools/resources, read one
+Java Glass UI resource, then call `life_show_choices`, `life_show_commitment`,
+and `life_show_outcome` with server-sanitized data. This validates the
+UI/protocol boundary; it is not a provider booking.
+
+The legacy Node UI compatibility suite remains available from a source checkout
+with `npm test`; it is not the installed product authority.
 
 ## Hosted adapter smoke
 
@@ -41,6 +42,9 @@ endpoint.
 
 The repository and controlled Tavall service prove protocol, UI, state-safety,
 browser-lease, retry semantics, and hosted adapter lifecycle. They do not claim
-a real Google/Microsoft/GitHub/Discord authentication ceremony, a provider-side
-booking, or a public deployment until those external gates are executed with
-authorized accounts.
+a real SSO ceremony, travel search, booking, or payment-provider workflow. On
+2026-09-12 a SANDBOX-REAL host/provider check did create and re-read a private
+disposable Google Calendar event and an unsent self-addressed Gmail draft; the
+Java task recorded both actions as WAITING_FOR_HUMAN and the temporary provider
+state was removed after capture. The video evidence manifest records the exact
+provider verification and remaining external gates.
