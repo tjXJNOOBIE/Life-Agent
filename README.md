@@ -149,3 +149,10 @@ STRANDS_BRIDGE_INTEGRATION_ENTRYPOINT=/absolute/path/to/strands-bridge/dist/mcp/
 ```
 
 Live third-party authentication ceremonies and real provider mutations remain host/provider acceptance boundaries; they are not claimed by the local test suite. The legacy Node MCP server remains available for the checked-in UI/App compatibility tests while its surfaces are ported to the Java MCP contract; it is not used as the Java product authority.
+On 2026-09-12, the committed Java package was exercised against connected
+Google Calendar and Gmail test-provider boundaries. A private disposable event
+and an unsent self-addressed draft were created and re-read, while Java kept
+both actions at WAITING_FOR_HUMAN; the temporary records were removed after
+capture. The SANDBOX-REAL clip and exact verification are listed in
+docs/evidence/VIDEO_EVIDENCE_MANIFEST.json. SSO, travel search, booking,
+payment, and public ChatGPT-host acceptance remain unclaimed.

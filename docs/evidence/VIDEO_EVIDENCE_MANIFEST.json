@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "agent": "Life Agent",
+  "generatedAt": "2026-09-12T18:23:00Z",
+  "entries": [
+    {
+      "scenario": "Outcome planning, provider capability routing, approval boundary, safe Calendar event and Gmail draft verification",
+      "date": "2026-09-12",
+      "environment": "Tavall Cloud DEVELOPMENT; committed packaged Java Life Agent over loopback MCP; connected Google test identity",
+      "serviceProvider": "Google Calendar primary calendar and Gmail",
+      "sourceCommit": "9ace7b8315c6b87d1c170e01911e84875e17c451",
+      "artifactFilename": "04-life-real-providers.mp4",
+      "artifactLocation": "/srv/workspace/tavall-pr-campaign.elxWjs/video-evidence/2026-09-12/04-life-real-providers.mp4",
+      "artifactSha256": "5dca9b7f2e4a78602e6b7e85c514afb4995ccab1eb50d3db1cfff05edab97622",
+      "action": "Java life_plan and life_provider_capabilities routed the travel-preparation outcome; Java life_request_action recorded Calendar and Gmail actions as WAITING_FOR_HUMAN. The connected host provider boundaries created a private disposable Calendar event and an unsent self-addressed Gmail draft.",
+      "authoritativeVerification": "google_calendar_read_event returned the event ID, private visibility, and exact time; gmail_read_email returned the message with DRAFT label and sent=false; gmail_list_drafts returned the matching draft. Both temporary provider records were moved/removed after capture.",
+      "classification": "SANDBOX-REAL"
+    }
+  ]
+}
