@@ -83,7 +83,7 @@ public final class LifeAgentApplication {
         try (LifeMcpRuntime runtime = LifeMcpRuntime.start(store, environment);
              StrandsBridgeMcpClient bridge = new StrandsBridgeMcpClient(
                      StrandsAgentProviderConfiguration.node(
-                             Path.of(node), Path.of(entrypoint), isolatedEnvironment(environment), Duration.ofSeconds(30),
+                            Path.of(node), Path.of(entrypoint), isolatedEnvironment(environment), Duration.ofMinutes(5),
                              environment.getOrDefault("LIFE_AGENT_MODEL_ID", "")
                      ))) {
             Map<String, Object> javaMcp = new LinkedHashMap<>();

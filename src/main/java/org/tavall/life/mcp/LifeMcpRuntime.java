@@ -33,7 +33,17 @@ public final class LifeMcpRuntime implements AutoCloseable {
                 "Java-owned Life Agent planning and approval-boundary MCP. Provider credentials, browser sessions, and payment confirmation remain outside the model view."
         );
         return new LifeMcpRuntime(AIFunctionMcpStandaloneHttpServer.start(
-                catalog, configuration, LifeMcpUiSurface.resources(), java.util.List.of()
+                catalog,
+                configuration,
+                LifeMcpUiSurface.resources(),
+                java.util.List.of(),
+                java.util.Map.of(),
+                java.util.List.of(new AIFunctionMcpStandaloneHttpServer.ServletRegistration(
+                        "lifeStatus",
+                        new LifeStatusServlet(),
+                        java.util.List.of("/", "/healthz", "/readyz")
+                )),
+                java.util.List.of()
         ));
     }
 

@@ -20,6 +20,23 @@ The dependency-free MCP server exposes seven production UI resources and matchin
 
 The accepted visual language is the dark Apple-like contextual Glass UI System: compact dense layouts, restrained blurred glass, recognizable provider marks, 22px outer materials, 16px option cards, progressive disclosure, and one obvious primary action. The checked-in reference fixture `fixtures/life-agent-glass-ui-system.html` is locked at 37,404 bytes with SHA-256 `f497d59d4cb86493009dc9412bbe60dfde313d0516e8b1cbbf47228967e6b7f5`. UI resources are versioned as `ui://life-agent/*-v2.html` and speak the MCP Apps view contract `2026-01-26`.
 
+## npm distribution
+
+The public product package is a thin launcher around the Java distribution. It
+verifies the bundled runtime manifest and resolves the pinned standalone
+Strands bridge without making the legacy TypeScript server authoritative.
+
+```bash
+npm install life-agent
+npx life-agent doctor
+npx life-agent
+npx life-agent serve
+```
+
+The package is prepared for public npm publication. Current clean-consumer
+evidence uses the versioned tarball produced by `npm pack` because the registry
+does not currently contain this package.
+
 ## Install for local ChatGPT Desktop testing
 
 The marketplace is `.agents/plugins/marketplace.json` and the plugin is under `plugins/life-agent/`.
@@ -58,7 +75,10 @@ Java `reason` command. The Strands child receives only `HOME`, `PATH`, and
 execution are trusted Java operations and are not present in the model
 Function Catalog view. Payments always require explicit human approval. The
 Java MCP also publishes the seven read-only MCP App resources and matching
-`life_show_*` render tools; they cannot perform provider mutations.
+`life_show_*` render tools; they cannot perform provider mutations. The Java
+distribution carries the checked-in Glass master as a resource and removes
+external image URLs before serving it, so installed MCP App reads do not depend
+on arbitrary third-party fetches.
 
 Open the repository in ChatGPT Desktop, choose **Plugins Directory**, add **Life Agent Dev**, and install **Life Agent**. Codex CLI can add the development marketplace with:
 

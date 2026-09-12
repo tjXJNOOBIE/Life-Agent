@@ -3,6 +3,9 @@ package org.tavall.life.mcp;
 import io.modelcontextprotocol.server.McpServerFeatures.SyncResourceSpecification;
 import io.modelcontextprotocol.spec.McpSchema;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -46,12 +49,35 @@ public final class LifeMcpUiSurface {
     }
 
     private static String document(String surface) {
-        return "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Life Agent "
-                + surface
-                + "\"><style>body{margin:0;background:#111;color:#f5f5f7;font:15px system-ui,sans-serif}main{margin:22px;padding:22px;border:1px solid #ffffff22;border-radius:22px;background:#ffffff0d;backdrop-filter:blur(18px)}small{color:#aaa}</style></head><body><main id=\"life-agent-surface\" data-surface=\""
-                + surface
-                + "\"><h1>Life Agent</h1><p>"
-                + surface
-                + "</p><small>Java-owned, sanitized MCP App surface · 2026-01-26</small></main><script>window.addEventListener('message',event=>{if(event.data?.type==='ui/initialize'){window.parent.postMessage({type:'ui/size',height:document.body.scrollHeight},'*')}});</script></body></html>";
+        try (InputStream input = LifeMcpUiSurface.class.getResourceAsStream(
+                "/life-agent/life-agent-glass-ui-system.html"
+        )) {
+            if (input == null) {
+                throw new IllegalStateException("Java Life Agent Glass UI resource is missing");
+            }
+            String source = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+            return sanitize(source, surface);
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to read Java Life Agent Glass UI resource", exception);
+        }
+    }
+
+    private static String sanitize(String source, String surface) {
+        String sanitized = source.replaceAll(
+                "url\\((['\"])https?://[^)]*?\\1\\)",
+                "var(--life-agent-image, none)"
+        );
+        sanitized = sanitized.replaceAll(
+                "(?i)<img\\s+class=\"icon\"\\s+src=\"https?://[^\"]+\">",
+                "<span class=\"fallback\">•</span>"
+        );
+        sanitized = sanitized.replace(
+                "<title>Life Agent Glass UI System</title>",
+                "<title>Life Agent " + surface + "</title>"
+        );
+        return sanitized.replace(
+                "<body>",
+                "<body data-mcp-app-surface=\"" + surface + "\">"
+        );
     }
 }
