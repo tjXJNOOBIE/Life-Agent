@@ -42,6 +42,10 @@ public final class LifeMcpRuntime implements AutoCloseable {
                         "lifeStatus",
                         new LifeStatusServlet(),
                         java.util.List.of("/", "/healthz", "/readyz")
+                ), new AIFunctionMcpStandaloneHttpServer.ServletRegistration(
+                        "lifeDemo",
+                        new LifeDemoServlet(),
+                        java.util.List.of("/demo", "/demo/*")
                 )),
                 java.util.List.of()
         ));

@@ -64,6 +64,30 @@ The Java MCP surfaces are:
 ./build/install/life-agent/bin/life-agent serve
 ```
 
+The plugin manifest also points to a thin `server/java-launcher.mjs`. That
+launcher only resolves and forwards to the Java executable; it does not
+implement MCP, task state, UI, provider policy, or provider actions. A source
+checkout resolves `build/install/life-agent/bin/life-agent`; an installed npm
+product resolves the `life-agent` command or an explicit
+`LIFE_AGENT_JAVA_COMMAND`. The former `server/server.mjs` remains only as
+legacy compatibility/reference code and is not the plugin authority.
+
+## Life Agent development demo
+
+The Java HTTP runtime includes a loopback-only product demo at `/demo`:
+
+```bash
+LIFE_AGENT_HOST=127.0.0.1 LIFE_AGENT_PORT=3300 \
+  ./build/install/life-agent/bin/life-agent serve
+```
+
+Open `http://127.0.0.1:3300/demo`. It provides navigable Overview, Trip Plan,
+Choices, Commitment, Handoff, Execution, Outcome, Settings, and MCP Surfaces
+views. The page calls the Java MCP boundary for planning, capability routing,
+approval state, task state, and seven MCP App resource reads. It is a NoAuth
+development surface bound to loopback only; provider credentials and
+consequential provider actions remain host-owned.
+
 Set `LIFE_AGENT_TASK_STATE_DIR` to an absolute, user-owned directory when a
 non-default task-state location is needed. Set
 `LIFE_AGENT_STRANDS_NODE` and `LIFE_AGENT_STRANDS_ENTRYPOINT` to enable the

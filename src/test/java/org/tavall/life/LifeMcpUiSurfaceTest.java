@@ -19,4 +19,17 @@ class LifeMcpUiSurfaceTest {
                 "ui://life-agent/capability-route-v2.html"
         );
     }
+
+    @Test
+    void servesDistinctGlassSurfaceDocumentsRatherThanOneGalleryFixture() {
+        var choices = LifeMcpUiSurface.documentFor("choices");
+        var commitment = LifeMcpUiSurface.documentFor("commitment");
+        var outcome = LifeMcpUiSurface.documentFor("outcome");
+        assertThat(choices).contains("Choose the plan that protects your afternoon");
+        assertThat(commitment).contains("Make the smallest decision");
+        assertThat(outcome).contains("Outcome ready");
+        assertThat(choices).isNotEqualTo(commitment);
+        assertThat(commitment).isNotEqualTo(outcome);
+        assertThat(choices).doesNotContain("id=\"confirmations\"");
+    }
 }
