@@ -123,7 +123,7 @@ npm test
 
 Coverage includes protocol compatibility, all seven UI surfaces, sanitizer limits, approval/retry safety, asset URL/IP/MIME/size safety, cache behavior, endpoint/user-state separation, hosted asset routing, and manifest-compatible behavior.
 
-Live third-party authentication ceremonies and real provider-side consequences remain explicit host/provider acceptance boundaries. The repository does not pretend a deterministic test suite booked somebody a flight. Humanity has suffered enough from demos doing improv.
+Live third-party authentication ceremonies and real provider-side consequences remain explicit host/provider acceptance boundaries and are not claimed by the deterministic local test suite.
 
 ## Hackathon evidence
 
