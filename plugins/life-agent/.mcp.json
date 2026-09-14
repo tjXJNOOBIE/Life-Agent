@@ -4,7 +4,7 @@
     "life-agent-ui": {
       "type": "stdio",
       "command": "node",
-      "args": ["${PLUGIN_ROOT}/server/server.mjs"]
+      "args": ["${PLUGIN_ROOT}/server/java-launcher.mjs"]
     }
   }
 }

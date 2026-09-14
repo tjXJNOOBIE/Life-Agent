@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "agent": "Life Agent",
+  "generatedAt": "2026-09-13T06:17:10Z",
+  "entries": [
+    {
+      "scenario": "Packaged Java Life Agent multi-surface product demo: outcome request, Java task creation, choice, commitment boundary, handoff, execution state, outcome, settings, and live MCP App resource reads",
+      "date": "2026-09-13",
+      "environment": "Tavall Life Agent DEVELOPMENT; clean packaged Java distribution on loopback 127.0.0.1:3310",
+      "serviceProvider": "Life Agent Java MCP and loopback NoAuth development demo servlet",
+      "sourceCommit": "de3c53c85ae46c221646c1a10b4b86ed65ce67dd",
+      "artifactFilename": "04-life-agent-product-demo.mp4",
+      "artifactLocation": "/srv/workspace/tavall-pr-campaign.elxWjs/video-evidence/2026-09-13/04-life-agent-product-demo.mp4",
+      "artifactSha256": "8da68a69a2d863ff575380b9d3700bd281670e6c950ce48a5b016b84ea56e9e6",
+      "action": "The browser operator submitted the trip-preparation outcome in the real Life Agent demo, invoked Java life_plan, chose a route, invoked Java life_request_action for Calendar and Gmail, and navigated the resulting Glass UI surfaces before loading live Java MCP tools and resources.",
+      "authoritativeVerification": "The Java MCP response created and persisted the task, returned WAITING_FOR_HUMAN for both provider actions, and tools/list/resources/list returned 11 Java tools and 7 Java-owned MCP App resources; selected resource documents were read from the running Java endpoint and rendered in the MCP surface preview.",
+      "classification": "REAL"
+    },
+    {
+      "scenario": "Outcome planning, provider capability routing, approval boundary, safe Calendar event and Gmail draft verification",
+      "date": "2026-09-12",
+      "environment": "Tavall Cloud DEVELOPMENT; committed packaged Java Life Agent over loopback MCP; connected Google test identity",
+      "serviceProvider": "Google Calendar primary calendar and Gmail",
+      "sourceCommit": "9ace7b8315c6b87d1c170e01911e84875e17c451",
+      "artifactFilename": "04-life-real-providers.mp4",
+      "artifactLocation": "/srv/workspace/tavall-pr-campaign.elxWjs/video-evidence/2026-09-12/04-life-real-providers.mp4",
+      "artifactSha256": "5dca9b7f2e4a78602e6b7e85c514afb4995ccab1eb50d3db1cfff05edab97622",
+      "action": "Java life_plan and life_provider_capabilities routed the travel-preparation outcome; Java life_request_action recorded Calendar and Gmail actions as WAITING_FOR_HUMAN. The connected host provider boundaries created a private disposable Calendar event and an unsent self-addressed Gmail draft.",
+      "authoritativeVerification": "google_calendar_read_event returned the event ID, private visibility, and exact time; gmail_read_email returned the message with DRAFT label and sent=false; gmail_list_drafts returned the matching draft. Both temporary provider records were moved/removed after capture.",
+      "classification": "SANDBOX-REAL"
+    }
+  ]
+}

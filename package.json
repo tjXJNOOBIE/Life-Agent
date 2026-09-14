@@ -1,10 +1,49 @@
 {
   "name": "life-agent",
-  "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "Java-owned Life Agent with an npm installation and launcher layer.",
   "type": "module",
   "scripts": {
     "test": "node tests/browser-auth.mjs && node tests/site-auth.mjs && node tests/approval-policy.mjs && node tests/mutation-retry.mjs && node tests/asset-cache.mjs && node tests/asset-route.mjs && node tests/asset-storage.mjs && node tests/structured-content.mjs && node tests/mcp-protocol.mjs && node tests/glass-ui.mjs && node tests/manifests.mjs && node tests/mcp-smoke.mjs",
-    "serve:http": "node plugins/life-agent/server/http.mjs"
-  }
+    "serve:http:legacy": "node plugins/life-agent/server/http.mjs",
+    "package:runtime": "node scripts/package-runtime.mjs",
+    "check:package": "npm run package:runtime && node bin/life-agent.mjs doctor",
+    "check": "npm test && gradle --no-daemon check && npm run check:package",
+    "prepack": "npm run package:runtime"
+  },
+  "bin": {
+    "life-agent": "./bin/life-agent.mjs"
+  },
+  "files": [
+    "bin",
+    "runtime",
+    "runtime-manifest.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@tjxjnoobie/strands-bridge": "https://github.com/tjXJNOOBIE/strands-bridge/archive/34b2d0129d362edc10b9b540114e81a5cabf082f.tar.gz"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjXJNOOBIE/Life-Agent.git"
+  },
+  "homepage": "https://github.com/tjXJNOOBIE/Life-Agent#readme",
+  "bugs": {
+    "url": "https://github.com/tjXJNOOBIE/Life-Agent/issues"
+  },
+  "keywords": [
+    "life-agent",
+    "mcp",
+    "mcp-apps",
+    "java",
+    "strands"
+  ]
 }

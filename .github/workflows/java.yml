@@ -1,0 +1,126 @@
+name: Java and package validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "working/**"
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_ACTOR: ${{ github.actor }}
+    steps:
+      - name: Checkout Life Agent
+        uses: actions/checkout@v4
+        with:
+          path: Life-Agent
+
+      - name: Checkout Function Catalog
+        uses: actions/checkout@v4
+        with:
+          repository: TavallStudios/function-catalog
+          ref: main
+          path: function-catalog
+
+      - name: Checkout canonical architecture tests
+        uses: actions/checkout@v4
+        with:
+          repository: TavallStudios/Tavall-Architecture-Tests
+          ref: main
+          path: Tavall-Architecture-Tests
+
+      - name: Checkout standalone Strands bridge
+        uses: actions/checkout@v4
+        with:
+          repository: tjXJNOOBIE/strands-bridge
+          ref: main
+          path: strands-bridge
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            Life-Agent/package-lock.json
+            strands-bridge/package-lock.json
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.7.1"
+
+      - name: Validate and publish canonical architecture tests locally
+        working-directory: Tavall-Architecture-Tests
+        run: |
+          gradle --no-daemon \
+            :modules:core:check :modules:core:publishToMavenLocal \
+            :modules:patterns:check :modules:patterns:publishToMavenLocal \
+            :modules:di:check :modules:di:publishToMavenLocal \
+            :modules:runtime:check :modules:runtime:publishToMavenLocal \
+            :gradle-plugin:check :gradle-plugin:publishToMavenLocal
+
+      - name: Validate Function Catalog 1.0.3
+        working-directory: function-catalog
+        run: ./gradlew --no-daemon -PtavallVersion=1.0.3 clean check publishToMavenLocal
+
+      - name: Validate standalone Strands bridge
+        working-directory: strands-bridge
+        run: |
+          npm ci --ignore-scripts
+          npm run check:real
+
+      - name: Install Life Agent dependencies and run product tests
+        working-directory: Life-Agent
+        run: |
+          npm ci --ignore-scripts
+          npm test
+
+      - name: Configure physical bridge integration
+        shell: bash
+        run: |
+          echo "STRANDS_BRIDGE_INTEGRATION_NODE=$(command -v node)" >> "$GITHUB_ENV"
+          echo "STRANDS_BRIDGE_INTEGRATION_ENTRYPOINT=$GITHUB_WORKSPACE/strands-bridge/dist/mcp/main.js" >> "$GITHUB_ENV"
+
+      - name: Validate Java Life Agent and package
+        working-directory: Life-Agent
+        shell: bash
+        run: |
+          set -o pipefail
+          gradle --no-daemon -Dstrands.bridge.integration.required=true clean test build installDist 2>&1 | tee java-validation.log
+          export TAVALL_GRADLE_ARGUMENTS="--include-build $GITHUB_WORKSPACE/Tavall-Architecture-Tests"
+          npm run check:package
+
+      - name: Verify clean tarball installation
+        working-directory: Life-Agent
+        shell: bash
+        run: |
+          package_file="$(npm pack --ignore-scripts --silent)"
+          mkdir -p /tmp/life-clean-consumer
+          cd /tmp/life-clean-consumer
+          npm init -y >/dev/null
+          npm install "$GITHUB_WORKSPACE/Life-Agent/$package_file" --ignore-scripts --no-audit --no-fund
+          npx --no-install life-agent doctor
+
+      - name: Preserve Java diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: life-agent-java-diagnostics
+          path: |
+            Life-Agent/java-validation.log
+            Life-Agent/build/reports/**
+            Life-Agent/build/test-results/**
+          if-no-files-found: warn
+          retention-days: 7
