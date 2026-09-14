@@ -4,7 +4,7 @@
 
 Life Agent is an outcome-first orchestration plugin for personal administration across connected apps, browser flows, calendars, messages, travel, and provider accounts. It resolves the capability a request needs before selecting a provider, performs only authorized work, verifies consequential mutations, and keeps authentication material outside persistent agent state.
 
-[Hackathon submission](HACKATHON_SUBMISSION.md) · [Demo runbook](DEMO_RUNBOOK.md) · [Architecture](docs/ARCHITECTURE.svg) · [Source](https://github.com/tjXJNOOBIE/Life-Agent)
+[Hackathon submission](HACKATHON_SUBMISSION.md) · [Demo runbook](DEMO_RUNBOOK.md) · [Architecture](docs/ARCHITECTURE.svg) · [Safety boundary](docs/SAFETY_BOUNDARY.svg) · [Source](https://github.com/tjXJNOOBIE/Life-Agent)
 
 ![Life Agent architecture](docs/ARCHITECTURE.svg)
 
@@ -52,6 +52,8 @@ That keeps provider selection replaceable and prevents the orchestration layer f
 ## Bounded by design
 
 Life Agent treats authentication and authorization as different problems.
+
+![Life Agent safety boundary](docs/SAFETY_BOUNDARY.svg)
 
 - Persistent identity links contain safe provider identity metadata, never reusable authentication material.
 - Passwords, tokens, cookies, MFA/recovery material, payment credentials, and browser profiles are never stored in `LIFE.md`.
@@ -130,6 +132,7 @@ Live third-party authentication ceremonies and real provider-side consequences r
 - [`HACKATHON_SUBMISSION.md`](HACKATHON_SUBMISSION.md) contains the submission framing and pre-existing-component disclosure.
 - [`DEMO_RUNBOOK.md`](DEMO_RUNBOOK.md) contains the controlled demo and acceptance path.
 - [`docs/ARCHITECTURE.svg`](docs/ARCHITECTURE.svg) captures the product boundary visually.
+- [`docs/SAFETY_BOUNDARY.svg`](docs/SAFETY_BOUNDARY.svg) captures the identity and credential boundary.
 - [`docs/UI_SURFACES.md`](docs/UI_SURFACES.md) documents the seven user-facing surfaces.
 
 The project is released under the [MIT License](LICENSE).
